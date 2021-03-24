@@ -59,13 +59,13 @@ public class VoxelData{
     }
 
     public static MoveDirection GetCurveDirection(MoveDirection dir1, MoveDirection dir2){
-        if((dir1 == MoveDirection.East && dir2 == MoveDirection.South) || (dir2 == MoveDirection.East && dir1 == MoveDirection.South)) 
+        if((dir1 == MoveDirection.West && dir2 == MoveDirection.North) || (dir1 == MoveDirection.South && dir2 == MoveDirection.East)) 
             return MoveDirection.North;
-        else if((dir1 == MoveDirection.East && dir2 == MoveDirection.North) || (dir2 == MoveDirection.East && dir1 == MoveDirection.North))
+        else if((dir1 == MoveDirection.East && dir2 == MoveDirection.North) || (dir1 == MoveDirection.South && dir2 == MoveDirection.West))
             return MoveDirection.West;
-        else if((dir1 == MoveDirection.West && dir2 == MoveDirection.South) || (dir2 == MoveDirection.West && dir1 == MoveDirection.South))
-            return MoveDirection.East;
-        else if((dir1 == MoveDirection.West && dir2 == MoveDirection.North) || (dir2 == MoveDirection.West && dir1 == MoveDirection.North))
+        else if((dir1 == MoveDirection.West && dir2 == MoveDirection.South) || (dir1 == MoveDirection.North && dir2 == MoveDirection.East))
+            return MoveDirection.East; 
+        else if((dir1 == MoveDirection.East && dir2 == MoveDirection.South) || (dir1 == MoveDirection.North && dir2 == MoveDirection.West))
             return MoveDirection.South;
         return MoveDirection.North;
     }

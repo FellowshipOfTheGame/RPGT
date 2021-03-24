@@ -119,8 +119,7 @@ public class Session : MonoBehaviour{
 
     // Executa o turno para uma entidade
     void Turn(){
-        Debug.Log("Entrou");
-        Debug.Log(turnQueue[0].id);
+        ClearPathInstances();
         // Recebe entidade com maior prioridade na lista
         Initiative entityInitiative = turnQueue[0];
         // Verifica se é jogador ou inimigo e excuta movimentação
@@ -131,7 +130,6 @@ public class Session : MonoBehaviour{
         // Atualiza lista e limpa marcadores
         turnQueue.RemoveAt(0);
         turnQueue.Add(entityInitiative);
-        Debug.Log(turnQueue[turnQueue.Count - 1].id);
     }
 
     // Calcula o número de movimentos que a entidade pode realizar
@@ -265,7 +263,6 @@ public class Session : MonoBehaviour{
                     InstantiatePathTile(previous, tileDir, BlockData.PathEnum.Curve);
                 }
                 // Armazena posição atual na pilha
-                //Debug.Log(dir);
                 path.Push(dir);
             }
         }
@@ -275,8 +272,10 @@ public class Session : MonoBehaviour{
     public void Move(Vector2Int goal){
         Vector2Int gridMove;
         Vector2Int gridPos = curEntity.GetComponent<Player>().gridCoord;
+        
         canWalk[gridPos.x, gridPos.y] = true;
         canWalk[goal.x, goal.y] = false;
+
         while(path.Count > 0){
             gridMove = path.Pop();
             gridPos = new Vector2Int(gridMove.x, gridMove.y); 
