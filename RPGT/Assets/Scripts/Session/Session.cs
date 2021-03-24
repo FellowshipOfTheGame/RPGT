@@ -272,14 +272,15 @@ public class Session : MonoBehaviour{
     public void Move(Vector2Int goal){
         Vector2Int gridMove;
         Vector2Int gridPos = curEntity.GetComponent<Player>().gridCoord;
+        Vector3 target;
+        Transform transform = curEntity.transform;
         
         canWalk[gridPos.x, gridPos.y] = true;
         canWalk[goal.x, goal.y] = false;
-
         while(path.Count > 0){
-            gridMove = path.Pop();
-            gridPos = new Vector2Int(gridMove.x, gridMove.y); 
-            curEntity.transform.Translate(new Vector3(gridPos.x, 0f, gridPos.y));
+            gridMove = path.Pop(); 
+            target = new Vector3(transform.position.x + gridMove.x, transform.position.y, transform.position.z + gridMove.y);
+            transform.position = Vector3.MoveTowards(transform.position, target, 100f);
         }
 
         // Atualiza posição do personagem
