@@ -6,9 +6,11 @@ public class SpawnTargetTile : MonoBehaviour{
     private Session session;
     private Vector2Int coord;
     private GameObject targetTile;
+    private TileManager tileManager;
 
     private void Start(){
-        session = GameObject.Find("GameHandler").GetComponent<Session>();
+        session = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Session>();
+        tileManager = GameObject.Find("TileHandler").GetComponent<TileManager>();
         coord = gameObject.GetComponent<PathCoord>().coord;
         targetTile = gameObject.transform.GetChild(0).gameObject;
     }
@@ -20,7 +22,7 @@ public class SpawnTargetTile : MonoBehaviour{
 
     private void OnMouseExit(){
         targetTile.SetActive(false);
-        session.ClearPathInstances();
+        tileManager.ClearPathInstances();
     }
 
     public void OnMouseDown(){

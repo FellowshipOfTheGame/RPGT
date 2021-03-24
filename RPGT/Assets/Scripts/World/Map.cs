@@ -124,4 +124,11 @@ public class Map : MonoBehaviour{
         triangles.Clear();
         uvs.Clear();
     }
+
+    // Verifica se a posição se encontra dentro do mapa
+    public bool IsPositionInMap(int x, int y){
+        if(x < 0 || x >= mapRows) return false; 
+        if(y < 0 || y >= mapCols) return false;
+        return true;
+    }
 }
