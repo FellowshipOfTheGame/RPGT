@@ -44,7 +44,7 @@ public class Session : MonoBehaviour{
     void InstantiatePlayers(){
         Player player;
         for(int i = 0; i < numOfPlayers; i++){
-            players.Add(Instantiate(playerPrefab, new Vector3(i + 0.5f, 1.5f, 0.5f), Quaternion.identity));
+            players.Add(Instantiate(playerPrefab, new Vector3(i + map.centerOffset, 3*map.centerOffset, map.centerOffset), Quaternion.identity));
             players[i].GetComponent<PlayerMovement>().map = map;
             SetPlayerData(i);
             player = players[i].GetComponent<Player>();
@@ -63,7 +63,7 @@ public class Session : MonoBehaviour{
     void InstantiateEnemies(){
         Player enemy;
         for(int i = 0; i < numOfEnemies; i++){
-            enemies.Add(Instantiate(enemyPrefab, new Vector3(i + 0.5f, 1.5f, (map.mapCols - 1) + 0.5f), Quaternion.identity));
+            enemies.Add(Instantiate(enemyPrefab, new Vector3(i + map.centerOffset, 3*map.centerOffset, (map.mapCols - 1) + map.centerOffset), Quaternion.identity));
             enemies[i].GetComponent<PlayerMovement>().map = map;
             SetEnemyData(i);
             enemy = enemies[i].GetComponent<Player>();
@@ -109,12 +109,12 @@ public class Session : MonoBehaviour{
         Vector2Int pos;
         // Marca as posições dos jogadores como inválidas (para evitar duas entidades na mesma posição)   
         for(int i = 0; i < numOfPlayers; i++){
-            pos = new Vector2Int(Mathf.FloorToInt(players[i].transform.position.x - 0.5f), Mathf.FloorToInt(players[i].transform.position.z - 0.5f));
+            pos = players[i].GetComponent<Player>().gridCoord;
             canWalk[pos.x, pos.y] = false;
         }
         // Marca as posições dos inimigos como inválidas (para evitar duas entidades na mesma posição)   
         for(int i = 0; i < numOfEnemies; i++){
-            pos = new Vector2Int(Mathf.FloorToInt(enemies[i].transform.position.x - 0.5f), Mathf.FloorToInt(enemies[i].transform.position.z - 0.5f));
+            pos = enemies[i].GetComponent<Player>().gridCoord;
             canWalk[pos.x, pos.y] = false;
         }
     }
@@ -128,16 +128,16 @@ public class Session : MonoBehaviour{
         // Verifica se é jogador ou inimigo e excuta movimentação
         bool isPlayer = (entityInitiative.id < numOfPlayers); 
         curEntity = (isPlayer) ? players[entityInitiative.id] : enemies[entityInitiative.id - numOfPlayers];
-        Vector2Int entityCoord = new Vector2Int(Mathf.FloorToInt(curEntity.transform.position.x - 0.5f), Mathf.FloorToInt(curEntity.transform.position.z - 0.5f)); 
+        Vector2Int entityCoord = curEntity.GetComponent<Player>().gridCoord;
         // Coloca marcador na posição atual do personagem
         tileManager.InstantiateMarkerTile(entityCoord, BlockData.MarkerEnum.EntityPos);
         // Calcula movimentos possíveis
         movements = curEntity.GetComponent<PlayerMovement>().GetAvailableMovements(entityCoord);
         // Coloca marcador nas posições onde o personagem pode andar
-        for(int i = 0; i < map.mapRows; i++)
-            for(int j = 0; j < map.mapCols; j++)
+        for(int i = 0; i <= movements.endRow - movements.startRow; i++)
+            for(int j = 0; j <= movements.endCol - movements.startCol; j++)
                 if(movements.visited[i,j]) 
-                    tileManager.InstantiateMarkerTile(new Vector2Int(i,j), BlockData.MarkerEnum.CanWalkYes);  
+                    tileManager.InstantiateMarkerTile(new Vector2Int(i + movements.startRow,j + movements.startCol), BlockData.MarkerEnum.CanWalkYes);  
         // Atualiza lista e limpa marcadores
         turnQueue.RemoveAt(0);
         turnQueue.Add(entityInitiative);
@@ -148,7 +148,7 @@ public class Session : MonoBehaviour{
         tileManager.ClearPathInstances();
         path.Clear();
         // Posições
-        Vector2Int previous = new Vector2Int(goal.x - movements.startRow, goal.y - movements.startCol);
+        Vector2Int previous = goal;
         Vector2Int cur = movements.parent[goal.x - movements.startRow, goal.y - movements.startCol];
         // Direções
         VoxelData.MoveDirection previousDir;
@@ -208,15 +208,5 @@ public class Initiative{
         this.id = id;
         this.initiative = initiative;
         this.isActive = true;
-    }
-}
-
-public class PriorityQueueNode{
-    public Vector2Int pos;
-    public int cost;
-
-    public PriorityQueueNode(Vector2Int pos, int cost){
-        this.pos = pos;
-        this.cost = cost;
     }
 }

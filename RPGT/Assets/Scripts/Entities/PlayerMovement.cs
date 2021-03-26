@@ -26,16 +26,21 @@ public class PlayerMovement : MonoBehaviour{
     // Calcula e exibe movimentações possíveis usando A*
     public MovementData GetAvailableMovements(Vector2Int pos){
         int availableMoves = GetMovementDistance();
+        // Calcula os limites da movimentação do personagem no mapa
+        int startRow = (map.IsPositionInMap(pos.x - availableMoves, pos.y)) ? pos.x - availableMoves : 0;
+        int endRow = (map.IsPositionInMap(pos.x + availableMoves, pos.y)) ? pos.x + availableMoves : map.mapRows-1;
+        int startCol = (map.IsPositionInMap(pos.x, pos.y - availableMoves)) ? pos.y - availableMoves : 0;
+        int endCol = (map.IsPositionInMap(pos.x, pos.y + availableMoves)) ? pos.y + availableMoves : map.mapCols-1;
         // Dados para o A*
-        Vector2Int[,] parents = new Vector2Int[map.mapRows, map.mapCols];
+        Vector2Int[,] parents = new Vector2Int[(endRow - startRow) + 1, (endCol - startCol) + 1];
         List<PriorityQueueNode> nodesToVisit = new List<PriorityQueueNode>();
         List<PriorityQueueNode> nodesVisited = new List<PriorityQueueNode>();
         // Controle dos blocos disponíveis para caminhar
-        bool[,] visited = new bool[map.mapRows, map.mapCols];
+        bool[,] visited = new bool[(endRow - startRow) + 1, (endCol - startCol) + 1];
 
         // Insere a posição inicial nas listas
         nodesToVisit.Add(new PriorityQueueNode(pos, 0));
-        parents[pos.x, pos.y] = new Vector2Int(-1, -1);
+        parents[pos.x - startRow, pos.y - startCol] = new Vector2Int(-1, -1);
 
         // Executa A*
         while(nodesToVisit.Count > 0){
@@ -69,9 +74,9 @@ public class PlayerMovement : MonoBehaviour{
                     // Se não tiver encontrado nós com custo menor, adiciona vizinho na lista
                     if(!hasLowerCost){
                         // Define o pai da posição adjacente
-                        parents[neighbor.pos.x,neighbor.pos.y] = cur.pos;
+                        parents[neighbor.pos.x - startRow,neighbor.pos.y - startCol] = cur.pos;
                         // Marca posição como visitada
-                        visited[neighbor.pos.x, neighbor.pos.y] = true;
+                        visited[neighbor.pos.x - startRow, neighbor.pos.y - startCol] = true;
                         nodesToVisit.Add(neighbor);
                     }
                 }
@@ -82,7 +87,17 @@ public class PlayerMovement : MonoBehaviour{
         nodesToVisit.Clear();
         nodesVisited.Clear();
 
-        return new MovementData(parents, visited, 0, map.mapRows-1, 0, map.mapCols-1);
+        return new MovementData(parents, visited, startRow, endRow, startCol, endCol);
+    }
+}
+
+public class PriorityQueueNode{
+    public Vector2Int pos;
+    public int cost;
+
+    public PriorityQueueNode(Vector2Int pos, int cost){
+        this.pos = pos;
+        this.cost = cost;
     }
 }
 

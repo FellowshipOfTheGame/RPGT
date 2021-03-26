@@ -6,6 +6,7 @@ public class Map : MonoBehaviour{
     // Variáveis para gerenciamento das informações gerais do mapa
     public int mapRows;
     public int mapCols;
+    public float centerOffset;
     public bool isMapPopulated = false; 
     public int[,] voxelMap;
     private List<BlockType> blockList;
@@ -26,6 +27,7 @@ public class Map : MonoBehaviour{
         voxelMap = new int[mapRows, mapCols];
         blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;
         Init();
+        centerOffset = gameObject.transform.localScale.x/2f;
     }
 
     // Inicializa variáveis da malha do mapa
