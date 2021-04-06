@@ -250,15 +250,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockList:
-  - blockName: Default
+  - blockName: Ground
     canWalk: 1
     icon: {fileID: 0}
-    backFaceTexture: 0
-    frontFaceTexture: 0
-    topFaceTexture: 0
+    backFaceTexture: 1
+    frontFaceTexture: 1
+    topFaceTexture: 2
     bottomFaceTexture: 0
-    leftFaceTexture: 0
-    rightFaceTexture: 0
+    leftFaceTexture: 1
+    rightFaceTexture: 1
+  - blockName: Stone
+    canWalk: 1
+    icon: {fileID: 0}
+    backFaceTexture: 3
+    frontFaceTexture: 3
+    topFaceTexture: 3
+    bottomFaceTexture: 3
+    leftFaceTexture: 3
+    rightFaceTexture: 3
   markerList:
   - {fileID: 1883263453598118730, guid: 8f11d4b08307db245990441259e1c7c7, type: 3}
   - {fileID: 8852340682133289868, guid: f99dc145e5d4c714ca3f9094d6d43c2e, type: 3}
@@ -390,8 +399,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapRows: 8
   mapCols: 8
+  centerOffset: 0
   isMapPopulated: 0
-  material: {fileID: 2100000, guid: 3c86ffddf91b33b45be9019e6e1467b4, type: 2}
+  material: {fileID: 2100000, guid: d768f359bec829e49bed363d9d07ca9d, type: 2}
 --- !u!114 &836492522
 MonoBehaviour:
   m_ObjectHideFlags: 0
