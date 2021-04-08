@@ -16,8 +16,8 @@ public class Session : MonoBehaviour{
     public static bool[,] canWalk;
     private MovementData movements;
     // Valores dos atributos das entidades
-    public List<EntityData> playerData = new List<EntityData>();
-    public List<EntityData> enemyData = new List<EntityData>(); 
+    //public List<EntityData> playerData = new List<EntityData>();
+    //public List<EntityData> enemyData = new List<EntityData>(); 
     // Conjunto de entidades da partida
     private Map map;
     private BlockData blockData;
@@ -33,15 +33,15 @@ public class Session : MonoBehaviour{
         blockData = GameObject.FindGameObjectWithTag("DataHandler").GetComponent<BlockData>();
         tileManager = GameObject.Find("TileHandler").GetComponent<TileManager>();
         canWalk = new bool[map.mapRows, map.mapCols];
-        InstantiatePlayers();
-        InstantiateEnemies();  
+        // InstantiatePlayers();
+        // InstantiateEnemies();  
         InitTurnQueue();        
         SetWalkablePositions();            
         Turn();
     }
 
     // Cria instancias para todos os jogadores da partida
-    void InstantiatePlayers(){
+    /*void InstantiatePlayers(){
         Player player;
         for(int i = 0; i < numOfPlayers; i++){
             players.Add(Instantiate(playerPrefab, new Vector3(i + map.centerOffset, 3*map.centerOffset, map.centerOffset), Quaternion.identity));
@@ -57,10 +57,10 @@ public class Session : MonoBehaviour{
             // Coloca a instância no objeto de listagem
             players[i].transform.SetParent(playerList);
         }
-    }
+    }*/
 
     // Cria instancias para todos os jogadores da partida
-    void InstantiateEnemies(){
+    /*void InstantiateEnemies(){
         Player enemy;
         for(int i = 0; i < numOfEnemies; i++){
             enemies.Add(Instantiate(enemyPrefab, new Vector3(i + map.centerOffset, 3*map.centerOffset, (map.mapCols - 1) + map.centerOffset), Quaternion.identity));
@@ -76,24 +76,24 @@ public class Session : MonoBehaviour{
             // Coloca a instância no objeto de listagem
             enemies[i].transform.SetParent(enemyList);
         }
-    }
+    }*/
 
     // Atribui os dados para o jogador correspondente
-    void SetPlayerData(int index){
+    /*void SetPlayerData(int index){
         players[index].GetComponent<Player>().data = playerData[index];
-    }
+    }*/
 
     // Atribui os dados para o inimigo correspondente
-    void SetEnemyData(int index){
+    /*void SetEnemyData(int index){
         enemies[index].GetComponent<Player>().data = enemyData[index];
-    }
+    }*/
 
     // Inicializa a fila que determina a ordem de jogadas do turno
     void InitTurnQueue(){
         turnQueue.Clear();
         // Insere as entidades na lista
-        for(int i = 0; i < numOfPlayers; i++) turnQueue.Add(new Initiative(i, players[i].GetComponent<Player>().curInitiative));
-        for(int i = 0; i < numOfEnemies; i++) turnQueue.Add(new Initiative(i + numOfPlayers, enemies[i].GetComponent<Player>().curInitiative));
+        for(int i = 0; i < numOfPlayers; i++) turnQueue.Add(new Initiative(i, players[i].GetComponent<Player>().current.initiative));
+        for(int i = 0; i < numOfEnemies; i++) turnQueue.Add(new Initiative(i + numOfPlayers, enemies[i].GetComponent<Player>().current.initiative));
         // Ordena a lista pela iniciativa
         // TODO substituir por uma fila de prioridade e incluir atributo de turno
         turnQueue.Sort((e1, e2) => -e1.initiative.CompareTo(e2.initiative));

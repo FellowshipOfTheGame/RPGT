@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour{
 
     // Calcula o número de movimentos que a entidade pode realizar
     public int GetMovementDistance(){
-        return this.GetComponent<Player>().curMoveDistance;
+        return this.GetComponent<Player>().current.moveDistance;
     }
 
     // Calcula e exibe movimentações possíveis usando A*
