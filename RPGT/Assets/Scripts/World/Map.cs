@@ -23,7 +23,7 @@ public class Map : MonoBehaviour{
     private MeshFilter meshFilter;
     public Material material;
 
-    void Start(){
+    void Awake(){
         voxelMap = new int[mapRows, mapCols];
         blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;
         Init();
@@ -48,7 +48,7 @@ public class Map : MonoBehaviour{
     void PopulateMap(){
         for(int i = 0; i < mapRows; i++){
             for(int j = 0; j < mapCols; j++){
-                voxelMap[i, j] = (int)BlockData.BlockEnum.Ground;
+                voxelMap[i, j] = (int)BlockData.BlockEnum.Default;
                 UpdateMeshData(new Vector2Int(i, j));
             }
         }
@@ -132,5 +132,17 @@ public class Map : MonoBehaviour{
         if(x < 0 || x >= mapRows) return false; 
         if(y < 0 || y >= mapCols) return false;
         return true;
+    }
+
+    public void UpdateVoxel(Vector2Int coord, int newBlockID){
+        voxelMap[coord.x, coord.y] = newBlockID;
+        ClearMeshData();
+        for(int i = 0; i < mapRows; i++){
+            for(int j = 0; j < mapCols; j++){
+                if(blockList[voxelMap[i,j]].canWalk)
+                    UpdateMeshData(new Vector2Int(i,j));
+            }   
+        }
+        CreateMesh();
     }
 }

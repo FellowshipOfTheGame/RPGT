@@ -7,7 +7,7 @@ public class BlockData : MonoBehaviour{
     public List<BlockType> blockList = new List<BlockType>();
     public List<GameObject> markerList = new List<GameObject>();
     public List<GameObject> pathList = new List<GameObject>();
-    public enum BlockEnum {Ground, Stone, Air, Liquid};
+    public enum BlockEnum {Default, Ground, Stone, Sand, RedSand, Air};
     public enum MarkerEnum {EntityPos, CanWalkYes, CanWalkNo};
     public enum PathEnum {Arrow, Curve, Line};
 }
