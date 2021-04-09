@@ -10,6 +10,10 @@ public class BlockData : MonoBehaviour{
     public enum BlockEnum {Ground, Stone, Air, Liquid};
     public enum MarkerEnum {EntityPos, CanWalkYes, CanWalkNo};
     public enum PathEnum {Arrow, Curve, Line};
+
+    public void Start() {
+        BlockContent.blockList = blockList;
+    }
 }
 
 [System.Serializable]
@@ -33,5 +37,24 @@ public class BlockType{
         else if(faceIndex == VoxelData.Direction.Bottom) return bottomFaceTexture;
         else if(faceIndex == VoxelData.Direction.Left) return leftFaceTexture;
         else return rightFaceTexture;
+    }
+}
+
+[System.Serializable]
+public class BlockContent {
+    public static List<BlockType> blockList = null;
+    public Entity entity = null;
+    public int blockTypeIndex = -1;
+
+    public BlockContent() {}
+    public BlockContent(Entity entity, int blockTypeIndex) {
+        this.entity = entity;
+        this.blockTypeIndex = blockTypeIndex;
+    }
+    public bool canWalk() { return entity == null && (blockTypeIndex != -1 || blockList[blockTypeIndex].canWalk); }
+
+    public override string ToString()
+    {
+        return JsonUtility.ToJson(this);
     }
 }

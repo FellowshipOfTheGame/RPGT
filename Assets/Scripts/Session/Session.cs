@@ -19,7 +19,6 @@ public class Session : MonoBehaviour{
     // Conjunto de entidades da partida
     private Map map;
     private BlockData blockData;
-    private TileManager tileManager;
     private List<GameObject> players = new List<GameObject>();
     private List<GameObject> enemies = new List<GameObject>();
 
@@ -28,22 +27,20 @@ public class Session : MonoBehaviour{
     
 
     public static Session singleton;
-    [HideInInspector]
     public Transform playersTransform;
-    [HideInInspector]
     public Transform enemiesTransform;
+    public TileManager tileManager;
 
     void Start(){
+        Debug.Log("Session:36 - Start()");
         if (singleton != null) {
             Destroy(this);
         }
         singleton = this;
-        playersTransform = GameObject.Find("Players").transform;
-        enemiesTransform = GameObject.Find("Enemies").transform;
 
         map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
         blockData = GameObject.FindGameObjectWithTag("DataHandler").GetComponent<BlockData>();
-        tileManager = GameObject.Find("TileHandler").GetComponent<TileManager>();
+        tileManager.gameObject.SetActive(true);
         canWalk = new bool[map.mapRows, map.mapCols];
         // InstantiatePlayers();
         // InstantiateEnemies();  
@@ -116,7 +113,7 @@ public class Session : MonoBehaviour{
         // Marca coordenadas cujos blocos apresentam alguma restrição de passagem
         for(int i = 0; i < map.mapRows; i++)
             for(int j = 0; j < map.mapCols; j++)
-                canWalk[i,j] = blockData.blockList[map.voxelMap[i,j]].canWalk;
+                canWalk[i,j] = NetworkMap.singleton.MapContentAt(i, j).canWalk();
 
         Vector2Int pos;
         // Marca as posições dos jogadores como inválidas (para evitar duas entidades na mesma posição)   
