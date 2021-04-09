@@ -16,9 +16,15 @@ public class Entity : NetworkBehaviour
     /// </summary>
     public override void OnStartClient() {
         Debug.Log("Entity:13 - OnStartClient()");
-        Debug.Log(GameObject.FindObjectOfType<NetworkMap>().mapContent[0]);
         // Sets the player transform
         transform.SetParent(GameObject.FindObjectOfType<Session>().playersTransform);
+    }
+
+    [TargetRpc]
+    public void SetGridCoord(Vector2Int gridCoord) {
+        
+        transform.position = new Vector3(gridCoord.x + 0.5f, 1.5f, gridCoord.y + 0.5f);
+        this.gridCoord = gridCoord;
     }
 
     // Informações visuais - Ainda indisponíveis devido a falta de um serializer

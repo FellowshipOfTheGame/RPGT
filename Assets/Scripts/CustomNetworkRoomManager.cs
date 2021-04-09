@@ -33,7 +33,12 @@ public class CustomNetworkRoomManager : NetworkManager
     {
         base.OnServerAddPlayer(conn);
         Debug.Log("CustomNetworkRoomManager:31 - OnServerAddPlayer(" + conn + ")");
+
+        // Spawns the player, fills its position on the mapContent and translates him to such position
+        Entity player = conn.identity.GetComponent<Entity>();
         Vector2Int spawnPos = networkMap.GetEmptyPosition();
-        networkMap.SetMapContent(spawnPos.x, spawnPos.y, networkMap.GetMapContent(spawnPos.x, spawnPos.y).with(conn.identity.GetComponent<Entity>()));
+        networkMap.SetMapContent(spawnPos.x, spawnPos.y, networkMap.GetMapContent(spawnPos.x, spawnPos.y).with(player));
+
+        player.SetGridCoord(spawnPos);
     }
 }
