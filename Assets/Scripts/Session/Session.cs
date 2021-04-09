@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class Session : MonoBehaviour{
     // Prefabs para geração das entidades 
-    public GameObject playerPrefab;
-    public GameObject enemyPrefab;
+    // public GameObject playerPrefab;
+    // public GameObject enemyPrefab;
     // Objetos para organização das entidades
-    public Transform playerList;
-    public Transform enemyList;
     // Dados para controle da partida
     public int numOfPlayers;
     public int numOfEnemies;
@@ -27,17 +25,31 @@ public class Session : MonoBehaviour{
 
     private GameObject curEntity;
     Stack<Vector2Int> path = new Stack<Vector2Int>();
+    
+
+    public static Session singleton;
+    [HideInInspector]
+    public Transform playersTransform;
+    [HideInInspector]
+    public Transform enemiesTransform;
 
     void Start(){
+        if (singleton != null) {
+            Destroy(this);
+        }
+        singleton = this;
+        playersTransform = GameObject.Find("Players").transform;
+        enemiesTransform = GameObject.Find("Enemies").transform;
+
         map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
         blockData = GameObject.FindGameObjectWithTag("DataHandler").GetComponent<BlockData>();
         tileManager = GameObject.Find("TileHandler").GetComponent<TileManager>();
         canWalk = new bool[map.mapRows, map.mapCols];
         // InstantiatePlayers();
         // InstantiateEnemies();  
-        InitTurnQueue();        
+        // InitTurnQueue();        
         SetWalkablePositions();            
-        Turn();
+        // Turn();
     }
 
     // Cria instancias para todos os jogadores da partida
@@ -89,7 +101,7 @@ public class Session : MonoBehaviour{
     }*/
 
     // Inicializa a fila que determina a ordem de jogadas do turno
-    void InitTurnQueue(){
+    /*void InitTurnQueue(){
         turnQueue.Clear();
         // Insere as entidades na lista
         for(int i = 0; i < numOfPlayers; i++) turnQueue.Add(new Initiative(i, players[i].GetComponent<Player>().current.initiative));
@@ -97,7 +109,7 @@ public class Session : MonoBehaviour{
         // Ordena a lista pela iniciativa
         // TODO substituir por uma fila de prioridade e incluir atributo de turno
         turnQueue.Sort((e1, e2) => -e1.initiative.CompareTo(e2.initiative));
-    }
+    }*/
 
     // Inicializa matriz de posições percorríveis de acordo com o mapa e a posição das entidades
     void SetWalkablePositions(){
@@ -120,7 +132,7 @@ public class Session : MonoBehaviour{
     }
 
     // Executa o turno para uma entidade
-    void Turn(){
+    /*void Turn(){
         tileManager.ClearPathInstances();
         path.Clear();
         // Recebe entidade com maior prioridade na lista
@@ -141,7 +153,7 @@ public class Session : MonoBehaviour{
         // Atualiza lista e limpa marcadores
         turnQueue.RemoveAt(0);
         turnQueue.Add(entityInitiative);
-    }
+    }*/
 
     // Constrói o caminho até o ponto de destino usando a matriz de parentesco
     public void DrawPath(Vector2Int goal){
@@ -195,7 +207,7 @@ public class Session : MonoBehaviour{
         curEntity.GetComponent<PlayerMovement>().Move(path, goal);
         // Inicia próximo turno
         tileManager.ClearMarkerInstances();
-        Turn();
+        // Turn();
     }
 }
 

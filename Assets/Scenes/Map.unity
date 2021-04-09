@@ -271,7 +271,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 42433522}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90846fad5b3897340b219dbb18dd5724, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b04d21d8da50cf4081c85d580ef96ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
@@ -289,11 +289,10 @@ MonoBehaviour:
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 6620323262764296958, guid: fe66cac74621c2d42a1f772a83004f89, type: 3}
+  playerPrefab: {fileID: 0}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
-  spawnPrefabs:
-  - {fileID: 1224230661515667694, guid: e5c932b0bb25bc8489ddda8f4a68f777, type: 3}
+  spawnPrefabs: []
 --- !u!4 &42433526
 Transform:
   m_ObjectHideFlags: 0
@@ -801,46 +800,8 @@ MonoBehaviour:
   enemyPrefab: {fileID: 1224230661515667694, guid: e5c932b0bb25bc8489ddda8f4a68f777, type: 3}
   playerList: {fileID: 1849958103}
   enemyList: {fileID: 992978683}
-  numOfPlayers: 3
-  numOfEnemies: 3
-  playerData:
-  - name: Mario A
-    health: 10
-    initiative: 10
-    moveDistance: 4
-    entitySprite: {fileID: 0}
-    entityIcon: {fileID: 0}
-  - name: Mario B
-    health: 10
-    initiative: 11
-    moveDistance: 5
-    entitySprite: {fileID: 0}
-    entityIcon: {fileID: 0}
-  - name: Mario C
-    health: 10
-    initiative: 12
-    moveDistance: 4
-    entitySprite: {fileID: 0}
-    entityIcon: {fileID: 0}
-  enemyData:
-  - name: Inimigo A
-    health: 10
-    initiative: 1
-    moveDistance: 4
-    entitySprite: {fileID: 0}
-    entityIcon: {fileID: 0}
-  - name: Inimigo B
-    health: 10
-    initiative: 2
-    moveDistance: 5
-    entitySprite: {fileID: 0}
-    entityIcon: {fileID: 0}
-  - name: Inimigo C
-    health: 10
-    initiative: 3
-    moveDistance: 6
-    entitySprite: {fileID: 0}
-    entityIcon: {fileID: 0}
+  numOfPlayers: 0
+  numOfEnemies: 0
 --- !u!1 &893552675
 GameObject:
   m_ObjectHideFlags: 0

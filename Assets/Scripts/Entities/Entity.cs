@@ -9,6 +9,11 @@ public class Entity : NetworkBehaviour
     public BasicStats initial;
     public BasicStats current;
     public Vector2Int gridCoord;
+    
+    public override void OnStartClient() {
+        // Sets the player transform
+        transform.SetParent(Session.singleton.playersTransform);
+    }
 
     // Informações visuais - Ainda indisponíveis devido a falta de um serializer
     // public Image entitySprite;
