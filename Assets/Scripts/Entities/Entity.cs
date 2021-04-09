@@ -16,6 +16,7 @@ public class Entity : NetworkBehaviour
     /// </summary>
     public override void OnStartClient() {
         Debug.Log("Entity:13 - OnStartClient()");
+        Debug.Log(GameObject.FindObjectOfType<NetworkMap>().mapContent[0]);
         // Sets the player transform
         transform.SetParent(GameObject.FindObjectOfType<Session>().playersTransform);
     }

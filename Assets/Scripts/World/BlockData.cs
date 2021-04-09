@@ -51,6 +51,12 @@ public class BlockContent {
         this.entity = entity;
         this.blockTypeIndex = blockTypeIndex;
     }
+
+    public BlockContent with(Entity entity) {
+        BlockContent newOne = (BlockContent) this.MemberwiseClone();
+        newOne.entity = entity;
+        return newOne;
+    }
     public bool canWalk() { return entity == null && (blockTypeIndex != -1 || blockList[blockTypeIndex].canWalk); }
 
     public override string ToString()

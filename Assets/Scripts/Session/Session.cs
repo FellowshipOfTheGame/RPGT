@@ -113,7 +113,7 @@ public class Session : MonoBehaviour{
         // Marca coordenadas cujos blocos apresentam alguma restrição de passagem
         for(int i = 0; i < map.mapRows; i++)
             for(int j = 0; j < map.mapCols; j++)
-                canWalk[i,j] = NetworkMap.singleton.MapContentAt(i, j).canWalk();
+                canWalk[i,j] = NetworkMap.singleton.GetMapContent(i, j).canWalk();
 
         Vector2Int pos;
         // Marca as posições dos jogadores como inválidas (para evitar duas entidades na mesma posição)   

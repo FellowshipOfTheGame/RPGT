@@ -17,11 +17,24 @@ public class NetworkMap : NetworkBehaviour
         }
         singleton = this;
 
-        Debug.Log(mapContent);
+        Debug.Log("mapContent should have been loaded");
     }
 
-    public BlockContent MapContentAt(int i, int j) {
-        // Debug.Log("NetworkMap:23 - MapContentAt(" + i + ", " + j + ")");
+    public BlockContent GetMapContent(int i, int j) {
+        // Debug.Log("NetworkMap:23 - GetMapContent(" + i + ", " + j + ")");
         return mapContent[(i * mapRows) + j];
+    }
+
+    public void SetMapContent(int i, int j, BlockContent value) {
+        // Debug.Log("NetworkMap:28 - SetMapContent(" + i + ", " + j + ", " + value + ")");
+        mapContent[(i * mapRows) + j] = value;
+    }
+
+    public Vector2Int GetEmptyPosition() {
+        for (int i = 0; i < mapRows; i++)
+            for (int j = 0; j < mapCols; j++) 
+                if (GetMapContent(i, j).canWalk())
+                    return new Vector2Int(i, j);
+        throw new System.Exception("Não há espaço vazio no mapa");
     }
 }

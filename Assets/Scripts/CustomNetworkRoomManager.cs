@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using Mirror;
+using System.Collections.Generic;
+using UnityEngine;
 
 /*
 	Documentation: https://mirror-networking.com/docs/Components/NetworkManager.html
@@ -22,4 +23,17 @@ public class CustomNetworkRoomManager : NetworkManager
 
         networkMap.mapContent.AddRange(tmpMapContent);
 	}
+
+    /// <summary>
+    /// Called on the server when a client adds a new player with ClientScene.AddPlayer.
+    /// <para>The default implementation for this function creates a new player object from the playerPrefab.</para>
+    /// </summary>
+    /// <param name="conn">Connection from client.</param>
+    public override void OnServerAddPlayer(NetworkConnection conn)
+    {
+        base.OnServerAddPlayer(conn);
+        Debug.Log("CustomNetworkRoomManager:31 - OnServerAddPlayer(" + conn + ")");
+        Vector2Int spawnPos = networkMap.GetEmptyPosition();
+        networkMap.SetMapContent(spawnPos.x, spawnPos.y, networkMap.GetMapContent(spawnPos.x, spawnPos.y).with(conn.identity.GetComponent<Entity>()));
+    }
 }
