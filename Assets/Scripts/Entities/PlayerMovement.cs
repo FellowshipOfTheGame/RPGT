@@ -1,11 +1,14 @@
-using System.Collections;
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour{
-    public Map map;
+public class PlayerMovement : NetworkBehaviour{
+    Stack<Vector2Int> path = new Stack<Vector2Int>();
+    [HideInInspector]
+    public MovementData movements;
 
-    public void Move(Stack<Vector2Int> path, Vector2Int goal){
+    [TargetRpc]
+    public void Move(Vector2Int goal){
         Vector2Int gridMove;
         Vector3 target;
         // Percorre cada posição na grid conforme o caminho
@@ -16,6 +19,8 @@ public class PlayerMovement : MonoBehaviour{
         }
         // Atualiza posição do personagem
         gameObject.GetComponent<Player>().gridCoord = goal;
+        // Inicia próximo turno
+        TileManager.singleton.ClearMarkerInstances();
     }
 
     // Calcula o número de movimentos que a entidade pode realizar
@@ -24,13 +29,14 @@ public class PlayerMovement : MonoBehaviour{
     }
 
     // Calcula e exibe movimentações possíveis usando A*
-    public MovementData GetAvailableMovements(Vector2Int pos){
+    public void GetAvailableMovements(Vector2Int pos){
+        Debug.Log("PlayerMovement:32 - GetAvailableMovements(" + pos + ")");
         int availableMoves = GetMovementDistance();
         // Calcula os limites da movimentação do personagem no mapa
-        int startRow = (map.IsPositionInMap(pos.x - availableMoves, pos.y)) ? pos.x - availableMoves : 0;
-        int endRow = (map.IsPositionInMap(pos.x + availableMoves, pos.y)) ? pos.x + availableMoves : map.mapRows-1;
-        int startCol = (map.IsPositionInMap(pos.x, pos.y - availableMoves)) ? pos.y - availableMoves : 0;
-        int endCol = (map.IsPositionInMap(pos.x, pos.y + availableMoves)) ? pos.y + availableMoves : map.mapCols-1;
+        int startRow = (Map.singleton.IsPositionInMap(pos.x - availableMoves, pos.y)) ? pos.x - availableMoves : 0;
+        int endRow = (Map.singleton.IsPositionInMap(pos.x + availableMoves, pos.y)) ? pos.x + availableMoves : Map.singleton.mapRows-1;
+        int startCol = (Map.singleton.IsPositionInMap(pos.x, pos.y - availableMoves)) ? pos.y - availableMoves : 0;
+        int endCol = (Map.singleton.IsPositionInMap(pos.x, pos.y + availableMoves)) ? pos.y + availableMoves : Map.singleton.mapCols-1;
         // Dados para o A*
         Vector2Int[,] parents = new Vector2Int[(endRow - startRow) + 1, (endCol - startCol) + 1];
         List<PriorityQueueNode> nodesToVisit = new List<PriorityQueueNode>();
@@ -55,7 +61,7 @@ public class PlayerMovement : MonoBehaviour{
             // Verifica posições vizinhas
             foreach(Vector2Int move in VoxelData.movements){
                 PriorityQueueNode neighbor = new PriorityQueueNode(new Vector2Int(cur.pos.x + move.x, cur.pos.y + move.y), cur.cost + 1);
-                if(map.IsPositionInMap(neighbor.pos.x, neighbor.pos.y) && Session.canWalk[neighbor.pos.x, neighbor.pos.y] && neighbor.cost <= availableMoves){
+                if(Map.singleton.IsPositionInMap(neighbor.pos.x, neighbor.pos.y) && NetworkMap.singleton.GetMapContent(neighbor.pos.x, neighbor.pos.y).canWalk() && neighbor.cost <= availableMoves){
                     bool hasLowerCost = false;
                     // Procura por nó na mesma posição (lista de nós abertos), mas com custo menor
                     foreach(PriorityQueueNode cmpNode in nodesToVisit){ 
@@ -87,7 +93,49 @@ public class PlayerMovement : MonoBehaviour{
         nodesToVisit.Clear();
         nodesVisited.Clear();
 
-        return new MovementData(parents, visited, startRow, endRow, startCol, endCol);
+        movements = new MovementData(parents, visited, startRow, endRow, startCol, endCol);
+    }
+
+    // Constrói o caminho até o ponto de destino usando a matriz de parentesco
+    public void DrawPath(Vector2Int goal){
+        TileManager.singleton.ClearPathInstances();
+        path.Clear();
+        // Posições
+        Vector2Int previous = goal;
+        Vector2Int cur = movements.parent[goal.x - movements.startRow, goal.y - movements.startCol];
+        // Direções
+        VoxelData.MoveDirection previousDir;
+        VoxelData.MoveDirection curDir;
+        Vector2Int dir;
+
+        // Calcula direção para posicionar seta
+        dir = new Vector2Int(previous.x - cur.x, previous.y - cur.y);
+        // Insere destino ao caminho
+        path.Push(dir);
+        // Instancia seta no mapa e define primeira direção
+        curDir = VoxelData.GetDirectionIndex(dir);
+        TileManager.singleton.InstantiatePathTile(previous, curDir, BlockData.PathEnum.Arrow);
+        
+        while(!(cur.x == -1 && cur.y == -1)){
+            // Atualiza posições
+            previous = cur;
+            cur = movements.parent[previous.x - movements.startRow, previous.y - movements.startCol];
+            // Critério de parada
+            if(!(cur.x == -1 && cur.y == -1)){
+                // Calcula direção em formato de vetor e recebe o índice correspondente
+                previousDir = curDir;
+                dir = new Vector2Int(previous.x - cur.x, previous.y - cur.y);
+                curDir = VoxelData.GetDirectionIndex(dir);
+                // Avalia qual será o tile utilizado na posição "previous"
+                if(previousDir == curDir) TileManager.singleton.InstantiatePathTile(previous, previousDir, BlockData.PathEnum.Line);
+                else{
+                    VoxelData.MoveDirection tileDir = VoxelData.GetCurveDirection(previousDir, curDir);
+                    TileManager.singleton.InstantiatePathTile(previous, tileDir, BlockData.PathEnum.Curve);
+                }
+                // Armazena posição atual na pilha
+                path.Push(dir);
+            }
+        }
     }
 }
 

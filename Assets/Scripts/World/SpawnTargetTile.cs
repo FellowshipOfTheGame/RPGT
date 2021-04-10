@@ -17,7 +17,7 @@ public class SpawnTargetTile : MonoBehaviour{
 
     private void OnMouseOver(){
         targetTile.SetActive(true);
-        session.DrawPath(coord);
+        Player.localPlayer.GetComponent<PlayerMovement>().DrawPath(coord);
     }
 
     private void OnMouseExit(){
@@ -26,6 +26,6 @@ public class SpawnTargetTile : MonoBehaviour{
     }
 
     public void OnMouseDown(){
-        session.Move(coord);
+        NetworkSession.singleton.CmdMove(coord);
     }
 }

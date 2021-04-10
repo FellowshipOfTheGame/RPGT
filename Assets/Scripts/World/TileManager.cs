@@ -3,18 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TileManager : MonoBehaviour{
+    public static TileManager singleton;
     public Transform markerInstanceList;
     public Transform pathInstanceList;
     private BlockData blockData;
     private Map map;
 
-    private void Start() {
+    private void Awake() {
+        // Debug.Log("TileManager:12 - Awake()");
+        if (singleton != null) {
+            Debug.LogWarning("Houve uma tentativa de setar 2 TileManagers");
+            Destroy(this);
+        }
+        singleton = this;
+
         blockData = GameObject.FindGameObjectWithTag("DataHandler").GetComponent<BlockData>();
         map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
     }
 
     // Instancia marcador no cenário
     public void InstantiateMarkerTile(Vector2Int pos, BlockData.MarkerEnum tile){
+        // Debug.Log("TileManager:24 - InstantiateMarkerTile(" + pos + ", " + tile + ")");
         GameObject entityPosPath = Instantiate(blockData.markerList[(int)tile], new Vector3(pos.x + map.centerOffset, 1.001f, pos.y + map.centerOffset), Quaternion.identity);
         entityPosPath.GetComponent<PathCoord>().coord = pos;
         entityPosPath.name = pos.x + "," + pos.y;

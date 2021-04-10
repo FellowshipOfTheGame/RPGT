@@ -10,14 +10,14 @@ public class NetworkMap : NetworkBehaviour
     public SyncList<BlockContent> mapContent = new SyncList<BlockContent>();
 
     public void Start() {
-        Debug.Log("NetworkMap:12 - Start()");
+        // Debug.Log("NetworkMap:12 - Start()");
         if (singleton != null) {
             Debug.LogWarning("Houve uma tentativa de instanciar mais de um NetworkMap");
             Destroy(this);
         }
         singleton = this;
 
-        Debug.Log("mapContent should have been loaded");
+        // Debug.Log("mapContent should have been loaded");
     }
 
     public BlockContent GetMapContent(int i, int j) {
@@ -25,6 +25,7 @@ public class NetworkMap : NetworkBehaviour
         return mapContent[(i * mapRows) + j];
     }
 
+    [Command(requiresAuthority = false)]
     public void SetMapContent(int i, int j, BlockContent value) {
         // Debug.Log("NetworkMap:28 - SetMapContent(" + i + ", " + j + ", " + value + ")");
         mapContent[(i * mapRows) + j] = value;

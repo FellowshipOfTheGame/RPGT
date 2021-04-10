@@ -1,14 +1,17 @@
 using Mirror;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkIdentity), typeof(NetworkTransform))]
-public class Entity : NetworkBehaviour
+public class Entity : NetworkBehaviour, IComparable
 {
     // Dados da entidade
     public BasicStats initial;
     public BasicStats current;
     public Vector2Int gridCoord;
+
+    [HideInInspector]
+    public int turn = 0;
 
     /// <summary>
     /// Called on every NetworkBehaviour when it is activated on a client.
@@ -30,6 +33,20 @@ public class Entity : NetworkBehaviour
     // Informações visuais - Ainda indisponíveis devido a falta de um serializer
     // public Image entitySprite;
     // public Image entityIcon;
+    public int CompareTo(object obj)
+    {
+        if (obj is Entity)
+        {
+            Entity entity = obj as Entity;
+            if (turn != entity.turn)
+                return turn - entity.turn;
+            if (entity.current.initiative != current.initiative)
+                return current.initiative - entity.current.initiative;
+            return (int) netId - (int) entity.netId;
+        }
+        throw new System.Exception("Compara��o de Entity com " + obj.GetType() + "n�o � v�lida");
+
+    }
 }
 
 [System.Serializable]

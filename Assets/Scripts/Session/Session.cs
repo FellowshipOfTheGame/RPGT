@@ -11,8 +11,7 @@ public class Session : MonoBehaviour{
     public int numOfPlayers;
     public int numOfEnemies;
     private List<Initiative> turnQueue = new List<Initiative>();
-    public static bool[,] canWalk;
-    private MovementData movements;
+    // public static bool[,] canWalk;
     // Valores dos atributos das entidades
     //public List<EntityData> playerData = new List<EntityData>();
     //public List<EntityData> enemyData = new List<EntityData>(); 
@@ -21,9 +20,6 @@ public class Session : MonoBehaviour{
     private BlockData blockData;
     private List<GameObject> players = new List<GameObject>();
     private List<GameObject> enemies = new List<GameObject>();
-
-    private GameObject curEntity;
-    Stack<Vector2Int> path = new Stack<Vector2Int>();
     
 
     public static Session singleton;
@@ -32,7 +28,7 @@ public class Session : MonoBehaviour{
     public TileManager tileManager;
 
     void Start(){
-        Debug.Log("Session:36 - Start()");
+        // Debug.Log("Session:36 - Start()");
         if (singleton != null) {
             Destroy(this);
         }
@@ -41,11 +37,11 @@ public class Session : MonoBehaviour{
         map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
         blockData = GameObject.FindGameObjectWithTag("DataHandler").GetComponent<BlockData>();
         tileManager.gameObject.SetActive(true);
-        canWalk = new bool[map.mapRows, map.mapCols];
+        // canWalk = new bool[map.mapRows, map.mapCols];
         // InstantiatePlayers();
         // InstantiateEnemies();  
         // InitTurnQueue();        
-        SetWalkablePositions();            
+        // SetWalkablePositions();            
         // Turn();
     }
 
@@ -109,7 +105,7 @@ public class Session : MonoBehaviour{
     }*/
 
     // Inicializa matriz de posições percorríveis de acordo com o mapa e a posição das entidades
-    void SetWalkablePositions(){
+    /*void SetWalkablePositions(){
         // Marca coordenadas cujos blocos apresentam alguma restrição de passagem
         for(int i = 0; i < map.mapRows; i++)
             for(int j = 0; j < map.mapCols; j++)
@@ -126,7 +122,7 @@ public class Session : MonoBehaviour{
             pos = enemies[i].GetComponent<Player>().gridCoord;
             canWalk[pos.x, pos.y] = false;
         }
-    }
+    }*/
 
     // Executa o turno para uma entidade
     /*void Turn(){
@@ -151,61 +147,6 @@ public class Session : MonoBehaviour{
         turnQueue.RemoveAt(0);
         turnQueue.Add(entityInitiative);
     }*/
-
-    // Constrói o caminho até o ponto de destino usando a matriz de parentesco
-    public void DrawPath(Vector2Int goal){
-        tileManager.ClearPathInstances();
-        path.Clear();
-        // Posições
-        Vector2Int previous = goal;
-        Vector2Int cur = movements.parent[goal.x - movements.startRow, goal.y - movements.startCol];
-        // Direções
-        VoxelData.MoveDirection previousDir;
-        VoxelData.MoveDirection curDir;
-        Vector2Int dir;
-
-        // Calcula direção para posicionar seta
-        dir = new Vector2Int(previous.x - cur.x, previous.y - cur.y);
-        // Insere destino ao caminho
-        path.Push(dir);
-        // Instancia seta no mapa e define primeira direção
-        curDir = VoxelData.GetDirectionIndex(dir);
-        tileManager.InstantiatePathTile(previous, curDir, BlockData.PathEnum.Arrow);
-        
-        while(!(cur.x == -1 && cur.y == -1)){
-            // Atualiza posições
-            previous = cur;
-            cur = movements.parent[previous.x - movements.startRow, previous.y - movements.startCol];
-            // Critério de parada
-            if(!(cur.x == -1 && cur.y == -1)){
-                // Calcula direção em formato de vetor e recebe o índice correspondente
-                previousDir = curDir;
-                dir = new Vector2Int(previous.x - cur.x, previous.y - cur.y);
-                curDir = VoxelData.GetDirectionIndex(dir);
-                // Avalia qual será o tile utilizado na posição "previous"
-                if(previousDir == curDir) tileManager.InstantiatePathTile(previous, previousDir, BlockData.PathEnum.Line);
-                else{
-                    VoxelData.MoveDirection tileDir = VoxelData.GetCurveDirection(previousDir, curDir);
-                    tileManager.InstantiatePathTile(previous, tileDir, BlockData.PathEnum.Curve);
-                }
-                // Armazena posição atual na pilha
-                path.Push(dir);
-            }
-        }
-    }
-
-    // Movimenta o personagem
-    public void Move(Vector2Int goal){
-        // Atualiza matriz de posições
-        Vector2Int gridPos = curEntity.GetComponent<Player>().gridCoord;
-        canWalk[gridPos.x, gridPos.y] = true;
-        canWalk[goal.x, goal.y] = false;
-        // Executa movimentação do jogador
-        curEntity.GetComponent<PlayerMovement>().Move(path, goal);
-        // Inicia próximo turno
-        tileManager.ClearMarkerInstances();
-        // Turn();
-    }
 }
 
 public class Initiative{
