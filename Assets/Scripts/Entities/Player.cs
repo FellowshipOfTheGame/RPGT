@@ -16,8 +16,5 @@ public class Player : Entity {
             Destroy(this);
         }
         localPlayer = this;
-
-        // Manually check for my turn
-        NetworkSession.singleton.CheckForMyTurn(null, NetworkSession.singleton.curEntity);
     }
 }

@@ -47,6 +47,11 @@ public class Entity : NetworkBehaviour, IComparable
         throw new System.Exception("Compara��o de Entity com " + obj.GetType() + "n�o � v�lida");
 
     }
+
+    public override string ToString()
+    {
+        return $"{{netId: {netId}, turn: {turn}, gridCoord: {gridCoord}}}";
+    }
 }
 
 [System.Serializable]

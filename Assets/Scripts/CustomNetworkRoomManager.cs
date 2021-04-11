@@ -40,15 +40,15 @@ public class CustomNetworkRoomManager : NetworkManager
         networkMap.SetMapContent(spawnPos.x, spawnPos.y, networkMap.GetMapContent(spawnPos.x, spawnPos.y).with(player));
 
         player.SetGridCoord(spawnPos);
+        player.turn = NetworkSession.singleton.turn;
 
         if (NetworkSession.singleton.curEntity == null) {
-            Debug.Log("Adicionando " + conn + " na turnQueue");
             NetworkSession.singleton.turnQueue.Add(player);
-            Debug.Log("Adicionando " + conn + " como curEntity");
             NetworkSession.singleton.curEntity = player;
+            
+            NetworkSession.singleton.TargetCheckForMyTurn(conn);
         }
         else {
-            Debug.Log("Adicionando " + conn + " na turnQueue");
             NetworkSession.singleton.turnQueue.Add(player);
         }
     }

@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class NetworkSession : NetworkBehaviour
 {
-    [SyncVar(hook = nameof(CheckForMyTurn))]
+    [SyncVar]
     public Entity curEntity = null;
     public SyncSortedSet<Entity> turnQueue = new SyncSortedSet<Entity>();
+    public int turn = 0;
     public static NetworkSession singleton;
 
     public void Awake() {
@@ -18,16 +19,17 @@ public class NetworkSession : NetworkBehaviour
         singleton = this;
     }
 
-    public void CheckForMyTurn(Entity oldEntity, Entity newEntity) {
-        // Debug.Log("NetworkSession:21 - CheckForMyTurn(" + oldEntity + ", " + newEntity + ")");
-        if (newEntity == null || !newEntity.Equals(Player.localPlayer)) {
+    [TargetRpc]
+    public void TargetCheckForMyTurn(NetworkConnection target) {
+        Debug.Log("NetworkSession:21 - TargetCheckForMyTurn(" + target + ")");
+        if (curEntity == null) {
             return;
         }
 
-        TileManager.singleton.InstantiateMarkerTile(newEntity.gridCoord, BlockData.MarkerEnum.EntityPos);
+        TileManager.singleton.InstantiateMarkerTile(curEntity.gridCoord, BlockData.MarkerEnum.EntityPos);
         // Calcula movimentos possíveis
         PlayerMovement playerMovement = Player.localPlayer.GetComponent<PlayerMovement>();
-        playerMovement.GetAvailableMovements(newEntity.gridCoord);
+        playerMovement.GetAvailableMovements(curEntity.gridCoord);
         // Coloca marcador nas posições onde o personagem pode andar
         for(int i = 0; i <= playerMovement.movements.endRow - playerMovement.movements.startRow; i++)
             for(int j = 0; j <= playerMovement.movements.endCol - playerMovement.movements.startCol; j++)
@@ -48,18 +50,14 @@ public class NetworkSession : NetworkBehaviour
         // Executa movimentação do jogador
         curEntity.GetComponent<PlayerMovement>().Move(goal);
 
-        Debug.Log("Removing " + curEntity + ". Tamanho da lista: " + turnQueue.Count);
         turnQueue.Remove(curEntity);
-        Debug.Log("Removed " + curEntity + ". Tamanho da lista: " + turnQueue.Count);
         curEntity.turn++;
-        Debug.Log("Adding " + curEntity + ". Tamanho da lista: " + turnQueue.Count);
+        turn = curEntity.turn;
         turnQueue.Add(curEntity);
-        Debug.Log("Added " + curEntity + ". Tamanho da lista: " + turnQueue.Count);
 
         foreach (Entity entity in turnQueue) {
-            Debug.Log("Updating " + curEntity);
             curEntity = entity;
-            Debug.Log("Updated " + curEntity);
+            TargetCheckForMyTurn(curEntity.netIdentity.connectionToClient);
             break;
         }
     }
