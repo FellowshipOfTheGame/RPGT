@@ -108,7 +108,7 @@ public class Map : MonoBehaviour{
         int y = Mathf.FloorToInt(pos.y);
         int z = Mathf.FloorToInt(pos.z);
 
-        return IsFaceInMapBorder(x, y, z);
+        return IsFaceInMapBorder(x, y, z) || (IsPositionInMap(x,z) && !blockList[voxelMap[x,z]].isSolid);
     }
 
     // Checa se a face do voxel se encontra em uma das bordas do mapa
@@ -137,12 +137,10 @@ public class Map : MonoBehaviour{
     public void UpdateVoxel(Vector2Int coord, int newBlockID){
         voxelMap[coord.x, coord.y] = newBlockID;
         ClearMeshData();
-        for(int i = 0; i < mapRows; i++){
-            for(int j = 0; j < mapCols; j++){
-                if(blockList[voxelMap[i,j]].canWalk)
+        for(int i = 0; i < mapRows; i++)
+            for(int j = 0; j < mapCols; j++)
+                if(blockList[voxelMap[i,j]].isSolid)
                     UpdateMeshData(new Vector2Int(i,j));
-            }   
-        }
         CreateMesh();
     }
 
@@ -150,9 +148,10 @@ public class Map : MonoBehaviour{
         ClearMeshData();
         for(int i = 0; i < mapRows; i++){
             for(int j = 0; j < mapCols; j++){
-                if(voxelMap[i,j] != (int)BlockData.BlockEnum.Air)
+                if(blockList[voxelMap[i,j]].isSolid){
                     voxelMap[i, j] = newBlockID;
-                UpdateMeshData(new Vector2Int(i,j));
+                    UpdateMeshData(new Vector2Int(i,j));
+                }
             }
         }
         CreateMesh();   

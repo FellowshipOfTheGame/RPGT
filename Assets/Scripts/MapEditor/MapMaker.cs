@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class MapMaker : MonoBehaviour{
-    public enum Tool {FillAll, Bucket, None};
+    public enum Tool {FillAll, Bucket, Erase, None};
 
     public static Vector2Int lastCoord;
     private int newSlotIndex;
@@ -16,7 +16,7 @@ public class MapMaker : MonoBehaviour{
     public GameObject[] hotbar;
     public GameObject[] toolButtons;
 
-    public List<BlockType> blockList;
+    public static List<BlockType> blockList;
 
     public static Map map;
     public GameObject blockEditPrefab;
@@ -57,8 +57,12 @@ public class MapMaker : MonoBehaviour{
         hotbar[0].GetComponent<Image>().sprite = selected;
         lastCoord = new Vector2Int(-1,-1);
         // Adiciona listeners para os botões das ferramentas
-        toolButtons[0].GetComponent<Button>().onClick.AddListener(() => SelectTool(Tool.FillAll));
-        toolButtons[1].GetComponent<Button>().onClick.AddListener(() => SelectTool(Tool.Bucket));
+        for(int i = 0; i < toolButtons.Length; i++){
+            int pos = i;
+            toolButtons[i].GetComponent<Button>().onClick.AddListener(() => SelectTool((Tool)pos));
+            toolButtons[i].GetComponentsInChildren<Image>()[1].enabled = false;
+            toolButtons[i].GetComponentsInChildren<Text>()[0].enabled = false;
+        }
         // Instancia blocos para permitir edição do mapa
         InitBlockEditorMap();
     }
@@ -113,23 +117,24 @@ public class MapMaker : MonoBehaviour{
         if(curTool == Tool.None) map.UpdateVoxel(coord, curBlockID);
         else if(curTool == Tool.FillAll) map.UpdateAllVoxels(curBlockID);
         else if(curTool == Tool.Bucket && map.voxelMap[coord.x, coord.y] != curBlockID) map.FloodFill(coord, map.voxelMap[coord.x, coord.y], curBlockID);
+        else if(curTool == Tool.Erase) map.UpdateVoxel(coord, (int)BlockData.BlockEnum.Air);
     }
     
     void SelectTool(Tool tool){
         int num_tool = (int)tool;
         if((int)curTool == num_tool){
             toolButtons[(int)curTool].GetComponent<Image>().sprite = notSelected;
-            toolButtons[(int)curTool].GetComponentInChildren<Text>().color = notSelectedColor;
+            toolButtons[(int)curTool].GetComponentsInChildren<Text>()[1].color = notSelectedColor;
             curTool = Tool.None;
         }
 
         else{
             if(curTool != Tool.None){
                 toolButtons[(int)curTool].GetComponent<Image>().sprite = notSelected;
-                toolButtons[(int)curTool].GetComponentInChildren<Text>().color = notSelectedColor;
+                toolButtons[(int)curTool].GetComponentsInChildren<Text>()[1].color = notSelectedColor;
             }
             toolButtons[(int)tool].GetComponent<Image>().sprite = selectedTool;
-            toolButtons[(int)tool].GetComponentInChildren<Text>().color = selectedColor;
+            toolButtons[(int)tool].GetComponentsInChildren<Text>()[1].color = selectedColor;
             curTool = tool;
         }
     }
