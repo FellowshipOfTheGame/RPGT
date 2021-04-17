@@ -8,7 +8,7 @@ public class BlockData : MonoBehaviour{
     public List<GameObject> markerList = new List<GameObject>();
     public List<GameObject> pathList = new List<GameObject>();
     public enum BlockEnum {Ground, Stone, Air, Liquid};
-    public enum MarkerEnum {EntityPos, CanWalkYes, CanWalkNo};
+    public enum MarkerEnum {EntityPos, CanWalkYes, Attack, AttackRange};
     public enum PathEnum {Arrow, Curve, Line};
 
     public void Start() {
@@ -44,6 +44,7 @@ public class BlockType{
 public class BlockContent {
     public static List<BlockType> blockList = null;
     public Entity entity = null;
+    public Effect effect = null;
     public int blockTypeIndex = -1;
 
     public BlockContent() {}
@@ -61,6 +62,6 @@ public class BlockContent {
 
     public override string ToString()
     {
-        return JsonUtility.ToJson(this);
+        return $"{{{entity}, {effect}}}";
     }
 }

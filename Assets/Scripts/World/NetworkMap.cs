@@ -17,42 +17,6 @@ public class NetworkMap : NetworkBehaviour
         singleton = this;
     }
 
-    void Start()
-    {
-        mapContent.Callback += OnInventoryUpdated;
-    }
-
-    void OnInventoryUpdated(SyncList<BlockContent>.Operation op, int index, BlockContent oldItem, BlockContent newItem)
-    {
-        switch (op)
-        {
-            case SyncList<BlockContent>.Operation.OP_ADD:
-                // index is where it got added in the list
-                // item is the new item
-                Debug.Log("Added new item to mapContent " + newItem);
-                break;
-            case SyncList<BlockContent>.Operation.OP_CLEAR:
-                // list got cleared
-                Debug.Log("Cleared mapContent");
-                break;
-            case SyncList<BlockContent>.Operation.OP_INSERT:
-                // index is where it got added in the list
-                // item is the new item
-                Debug.Log("Inserted new item to mapContent " + newItem);
-                break;
-            case SyncList<BlockContent>.Operation.OP_REMOVEAT:
-                // index is where it got removed in the list
-                // item is the item that was removed
-                Debug.Log("Removed an item from mapContent " + oldItem);
-                break;
-            case SyncList<BlockContent>.Operation.OP_SET:
-                // index is the index of the item that was updated
-                // item is the previous item
-                Debug.Log("Updated index " + index + " of mapContent from " + oldItem + " to " + newItem);
-                break;
-        }
-    }
-
     public BlockContent GetMapContent(int i, int j) {
         // Debug.Log("NetworkMap:23 - GetMapContent(" + i + ", " + j + ")");
         return mapContent[(i * mapRows) + j];

@@ -30,7 +30,7 @@ public class Entity : NetworkBehaviour, IComparable
 
     [TargetRpc]
     public void TargetClearMarkerAndPathInstances(NetworkConnection target) {
-        Debug.Log(name + " " + netId);
+        // Debug.Log(name + " " + netId);
         TileManager.singleton.ClearMarkerInstances();
         TileManager.singleton.ClearPathInstances();
     }

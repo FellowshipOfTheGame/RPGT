@@ -14,7 +14,7 @@ public class PlayerMovement : NetworkBehaviour{
 
     // Calcula e exibe movimentações possíveis usando A*
     public void GetAvailableMovements(Vector2Int pos){
-        Debug.Log("PlayerMovement:32 - GetAvailableMovements(" + pos + ")");
+        // Debug.Log("PlayerMovement:32 - GetAvailableMovements(" + pos + ")");
         int availableMoves = GetMovementDistance();
         // Calcula os limites da movimentação do personagem no mapa
         int startRow = (Map.singleton.IsPositionInMap(pos.x - availableMoves, pos.y)) ? pos.x - availableMoves : 0;
