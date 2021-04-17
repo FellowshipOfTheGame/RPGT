@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class NetworkSession : NetworkBehaviour
 {
+    public SyncSortedSet<Entity> turnQueue = new SyncSortedSet<Entity>();
     [SyncVar]
     public Entity curEntity = null;
-    public SyncSortedSet<Entity> turnQueue = new SyncSortedSet<Entity>();
     public int turn = 0;
     public static NetworkSession singleton;
 
@@ -21,15 +21,13 @@ public class NetworkSession : NetworkBehaviour
 
     [TargetRpc]
     public void TargetCheckForMyTurn(NetworkConnection target) {
-        Debug.Log("NetworkSession:21 - TargetCheckForMyTurn(" + target + ")");
-        if (curEntity == null) {
-            return;
-        }
+        Debug.Log("NetworkSession:21 - TargetCheckForMyTurn(" + target.identity.netId + ") " + target.identity.GetComponent<Entity>());
+        Entity targetPlayer = target.identity.GetComponent<Entity>(); // Tentei usar o curEntity ao invés do targetPlayer, mas as vezes o curEntity não sincronizava a tempo
 
-        TileManager.singleton.InstantiateMarkerTile(curEntity.gridCoord, BlockData.MarkerEnum.EntityPos);
+        TileManager.singleton.InstantiateMarkerTile(targetPlayer.gridCoord, BlockData.MarkerEnum.EntityPos);
         // Calcula movimentos possíveis
-        PlayerMovement playerMovement = Player.localPlayer.GetComponent<PlayerMovement>();
-        playerMovement.GetAvailableMovements(curEntity.gridCoord);
+        PlayerMovement playerMovement = targetPlayer.GetComponent<PlayerMovement>();
+        playerMovement.GetAvailableMovements(targetPlayer.gridCoord);
         // Coloca marcador nas posições onde o personagem pode andar
         for(int i = 0; i <= playerMovement.movements.endRow - playerMovement.movements.startRow; i++)
             for(int j = 0; j <= playerMovement.movements.endCol - playerMovement.movements.startCol; j++)
@@ -44,12 +42,15 @@ public class NetworkSession : NetworkBehaviour
             return;
         }
         // Atualiza matriz de posições
-        Vector2Int gridPos = curEntity.GetComponent<Player>().gridCoord;
-        NetworkMap.singleton.SetMapContent(gridPos.x, gridPos.y, NetworkMap.singleton.GetMapContent(gridPos.x, gridPos.y).with(null));
-        NetworkMap.singleton.SetMapContent(goal.x, goal.y, NetworkMap.singleton.GetMapContent(goal.x, goal.y).with(curEntity));
+        NetworkMap.singleton.MoveEntity(curEntity.GetComponent<Player>().gridCoord, goal);
         // Executa movimentação do jogador
-        curEntity.GetComponent<PlayerMovement>().Move(goal);
+        curEntity.gridCoord = goal;
+        curEntity.TargetClearMarkerAndPathInstances(curEntity.netIdentity.connectionToClient);
 
+        NextTurn();
+    }
+
+    void NextTurn() {
         turnQueue.Remove(curEntity);
         curEntity.turn++;
         turn = curEntity.turn;

@@ -853,6 +853,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   curEntity: {fileID: 0}
+  turn: 0
 --- !u!1 &893552675
 GameObject:
   m_ObjectHideFlags: 0

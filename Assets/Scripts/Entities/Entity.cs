@@ -8,7 +8,12 @@ public class Entity : NetworkBehaviour, IComparable
     // Dados da entidade
     public BasicStats initial;
     public BasicStats current;
-    public Vector2Int gridCoord;
+    
+    [HideInInspector]
+    public Vector2Int gridCoord { 
+        get { return new Vector2Int((int) transform.position.x, (int) transform.position.z); }
+        set { transform.position = new Vector3(value.x + 0.5f, 1.5f, value.y + 0.5f); }
+    }
 
     [HideInInspector]
     public int turn = 0;
@@ -18,16 +23,16 @@ public class Entity : NetworkBehaviour, IComparable
     /// <para>Objects on the host have this function called, as there is a local client on the host. The values of SyncVars on object are guaranteed to be initialized correctly with the latest state from the server when this function is called on the client.</para>
     /// </summary>
     public override void OnStartClient() {
-        Debug.Log("Entity:13 - OnStartClient()");
+        // Debug.Log("Entity:13 - OnStartClient()");
         // Sets the player transform
         transform.SetParent(GameObject.FindObjectOfType<Session>().playersTransform);
     }
 
     [TargetRpc]
-    public void SetGridCoord(Vector2Int gridCoord) {
-        
-        transform.position = new Vector3(gridCoord.x + 0.5f, 1.5f, gridCoord.y + 0.5f);
-        this.gridCoord = gridCoord;
+    public void TargetClearMarkerAndPathInstances(NetworkConnection target) {
+        Debug.Log(name + " " + netId);
+        TileManager.singleton.ClearMarkerInstances();
+        TileManager.singleton.ClearPathInstances();
     }
 
     // Informações visuais - Ainda indisponíveis devido a falta de um serializer
@@ -45,7 +50,6 @@ public class Entity : NetworkBehaviour, IComparable
             return (int) netId - (int) entity.netId;
         }
         throw new System.Exception("Compara��o de Entity com " + obj.GetType() + "n�o � v�lida");
-
     }
 
     public override string ToString()

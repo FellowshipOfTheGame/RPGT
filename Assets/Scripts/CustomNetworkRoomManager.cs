@@ -39,17 +39,21 @@ public class CustomNetworkRoomManager : NetworkManager
         Vector2Int spawnPos = networkMap.GetEmptyPosition();
         networkMap.SetMapContent(spawnPos.x, spawnPos.y, networkMap.GetMapContent(spawnPos.x, spawnPos.y).with(player));
 
-        player.SetGridCoord(spawnPos);
+        player.gridCoord = spawnPos;
         player.turn = NetworkSession.singleton.turn;
 
         if (NetworkSession.singleton.curEntity == null) {
             NetworkSession.singleton.turnQueue.Add(player);
             NetworkSession.singleton.curEntity = player;
             
+            // Sempre vai ser a vez do primeiro player que entrar, por isso já mandamos ele realizar o turno dele
             NetworkSession.singleton.TargetCheckForMyTurn(conn);
         }
         else {
             NetworkSession.singleton.turnQueue.Add(player);
+            // Sempre que um novo player entrar, o curEntity precisa re-calcular as posições andáveis para o caso de o novo player spawnar próximo do curEntity
+            Player.localPlayer.TargetClearMarkerAndPathInstances(NetworkSession.singleton.curEntity.netIdentity.connectionToClient);
+            NetworkSession.singleton.TargetCheckForMyTurn(NetworkSession.singleton.curEntity.netIdentity.connectionToClient);
         }
     }
 }

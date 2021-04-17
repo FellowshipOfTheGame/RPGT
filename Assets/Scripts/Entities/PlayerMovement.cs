@@ -7,22 +7,6 @@ public class PlayerMovement : NetworkBehaviour{
     [HideInInspector]
     public MovementData movements;
 
-    [TargetRpc]
-    public void Move(Vector2Int goal){
-        Vector2Int gridMove;
-        Vector3 target;
-        // Percorre cada posição na grid conforme o caminho
-        while(path.Count > 0){
-            gridMove = path.Pop(); 
-            target = new Vector3(this.transform.position.x + gridMove.x, this.transform.position.y, this.transform.position.z + gridMove.y);
-            this.transform.position = Vector3.MoveTowards(this.transform.position, target, 100f);
-        }
-        // Atualiza posição do personagem
-        gameObject.GetComponent<Player>().gridCoord = goal;
-        // Inicia próximo turno
-        TileManager.singleton.ClearMarkerInstances();
-    }
-
     // Calcula o número de movimentos que a entidade pode realizar
     public int GetMovementDistance(){
         return this.GetComponent<Player>().current.moveDistance;
