@@ -39,7 +39,7 @@ public class MapMaker : MonoBehaviour{
         curSlotIndex = 0;
         curBlockID = hotbar[0].GetComponent<MapMakerSlot>().blockID;
         // Referencia objetos necessários para o controle dos blocos do mapa
-        map = GameObject.Find("GameHandler").GetComponent<Map>();
+        map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
         highlightBlock = GameObject.Find("BlockHighlight");
         highlightBlock.SetActive(false);
         blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;

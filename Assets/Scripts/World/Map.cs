@@ -23,7 +23,15 @@ public class Map : MonoBehaviour{
     private MeshFilter meshFilter;
     public Material material;
 
-    void Awake(){
+    public static Map singleton;
+
+    void Awake() {
+        if (singleton != null) {
+            Debug.LogWarning("Houve uma tentativa de criar 2 Maps");
+            Destroy(this);
+        }
+
+        singleton = this;
         voxelMap = new int[mapRows, mapCols];
         blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;
         Init();

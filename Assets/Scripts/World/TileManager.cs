@@ -3,22 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TileManager : MonoBehaviour{
+    public static TileManager singleton;
     public Transform markerInstanceList;
     public Transform pathInstanceList;
+    public Transform attackInstanceList;
     private BlockData blockData;
     private Map map;
 
-    private void Start() {
+    private void Awake() {
+        // Debug.Log("TileManager:12 - Awake()");
+        if (singleton != null) {
+            Debug.LogWarning("Houve uma tentativa de setar 2 TileManagers");
+            Destroy(this);
+        }
+        singleton = this;
+
         blockData = GameObject.FindGameObjectWithTag("DataHandler").GetComponent<BlockData>();
         map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
     }
 
     // Instancia marcador no cenário
-    public void InstantiateMarkerTile(Vector2Int pos, BlockData.MarkerEnum tile){
-        GameObject entityPosPath = Instantiate(blockData.markerList[(int)tile], new Vector3(pos.x + map.centerOffset, 1.001f, pos.y + map.centerOffset), Quaternion.identity);
+    public void InstantiateMarkerTile(Vector2Int pos, BlockData.MarkerEnum tile, bool useAttackInstanceList = false){
+        GameObject entityPosPath;
+        if (useAttackInstanceList) {
+            entityPosPath = Instantiate(blockData.markerList[(int)tile], new Vector3(pos.x + map.centerOffset, 1.002f, pos.y + map.centerOffset), Quaternion.identity);
+            entityPosPath.transform.SetParent(attackInstanceList);
+        }
+        else {
+            entityPosPath = Instantiate(blockData.markerList[(int)tile], new Vector3(pos.x + map.centerOffset, 1.001f, pos.y + map.centerOffset), Quaternion.identity);
+            entityPosPath.transform.SetParent(markerInstanceList);
+        }
         entityPosPath.GetComponent<PathCoord>().coord = pos;
         entityPosPath.name = pos.x + "," + pos.y;
-        entityPosPath.transform.SetParent(markerInstanceList);
         entityPosPath.SetActive(true);
     }
 
@@ -54,6 +70,20 @@ public class TileManager : MonoBehaviour{
         int childIndex = 0;
 
         foreach(Transform child in markerInstanceList){
+            allChildren[childIndex] = child.gameObject;
+            childIndex += 1;
+        }
+
+        foreach(GameObject child in allChildren) 
+            DestroyImmediate(child.gameObject);
+    }
+
+    // Remove todas as instâncias de marcador do cenário
+    public void ClearAttackInstances(){
+        GameObject[] allChildren = new GameObject[attackInstanceList.childCount];
+        int childIndex = 0;
+
+        foreach(Transform child in attackInstanceList){
             allChildren[childIndex] = child.gameObject;
             childIndex += 1;
         }
