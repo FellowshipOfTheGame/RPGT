@@ -32,9 +32,6 @@ public class Map : MonoBehaviour{
         }
 
         singleton = this;
-    }
-
-    void Start(){
         voxelMap = new int[mapRows, mapCols];
         blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;
         Init();
@@ -59,7 +56,7 @@ public class Map : MonoBehaviour{
     void PopulateMap(){
         for(int i = 0; i < mapRows; i++){
             for(int j = 0; j < mapCols; j++){
-                voxelMap[i, j] = (int)BlockData.BlockEnum.Ground;
+                voxelMap[i, j] = (int)BlockData.BlockEnum.Default;
                 UpdateMeshData(new Vector2Int(i, j));
             }
         }
@@ -119,7 +116,7 @@ public class Map : MonoBehaviour{
         int y = Mathf.FloorToInt(pos.y);
         int z = Mathf.FloorToInt(pos.z);
 
-        return IsFaceInMapBorder(x, y, z);
+        return IsFaceInMapBorder(x, y, z) || (IsPositionInMap(x,z) && !blockList[voxelMap[x,z]].isSolid);
     }
 
     // Checa se a face do voxel se encontra em uma das bordas do mapa
@@ -143,5 +140,38 @@ public class Map : MonoBehaviour{
         if(x < 0 || x >= mapRows) return false; 
         if(y < 0 || y >= mapCols) return false;
         return true;
+    }
+
+    public void UpdateVoxel(Vector2Int coord, int newBlockID){
+        voxelMap[coord.x, coord.y] = newBlockID;
+        ClearMeshData();
+        for(int i = 0; i < mapRows; i++)
+            for(int j = 0; j < mapCols; j++)
+                if(blockList[voxelMap[i,j]].isSolid)
+                    UpdateMeshData(new Vector2Int(i,j));
+        CreateMesh();
+    }
+
+    public void UpdateAllVoxels(int newBlockID){
+        ClearMeshData();
+        for(int i = 0; i < mapRows; i++){
+            for(int j = 0; j < mapCols; j++){
+                if(blockList[voxelMap[i,j]].isSolid){
+                    voxelMap[i, j] = newBlockID;
+                    UpdateMeshData(new Vector2Int(i,j));
+                }
+            }
+        }
+        CreateMesh();   
+    }
+
+    public void FloodFill(Vector2Int coord, int targetBlock, int newBlock){
+        UpdateVoxel(coord, newBlock);
+        Vector2Int neighbor;
+        for(int i = 0; i < VoxelData.movements.Length; i++){
+            neighbor = new Vector2Int(coord.x + VoxelData.movements[i].x, coord.y + VoxelData.movements[i].y);
+            if(IsPositionInMap(neighbor.x, neighbor.y) && voxelMap[neighbor.x, neighbor.y] == targetBlock)
+                FloodFill(neighbor, targetBlock, newBlock);
+        }
     }
 }
