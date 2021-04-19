@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class TileManager : MonoBehaviour{
     public static TileManager singleton;
-    Transform pathLayer;
+    [HideInInspector]
+    public Transform pathLayer;
     [HideInInspector]
     public List<Transform> tileLayers = new List<Transform>();
     [SerializeField]
@@ -61,8 +62,10 @@ public class TileManager : MonoBehaviour{
 
     // Remove todos as instâncias de caminho do cenário
     public void ClearPathInstances(){
-        foreach(Transform child in pathLayer) 
+        foreach(Transform child in pathLayer) {
+            Debug.Log($"Destroying {child.name}");
             Destroy(child.gameObject);  
+        }
     }
 
     // Remove todas as instâncias de marcador do cenário

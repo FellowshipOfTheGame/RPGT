@@ -45,13 +45,12 @@ public class CustomNetworkRoomManager : NetworkManager
             NetworkSession.singleton.curEntity = player;
             
             // Sempre vai ser a vez do primeiro player que entrar, por isso já mandamos ele realizar o turno dele
-            NetworkSession.singleton.TargetCheckForMyTurn(conn);
+            NetworkSession.singleton.TargetDoTurn(conn);
         }
         else {
             NetworkSession.singleton.turnQueue.Add(player);
-            // Sempre que um novo player entrar, o curEntity precisa re-calcular as posições andáveis para o caso de o novo player spawnar próximo do curEntity
-            Player.localPlayer.TargetClearMarkerAndPathInstances(NetworkSession.singleton.curEntity.netIdentity.connectionToClient);
-            NetworkSession.singleton.TargetCheckForMyTurn(NetworkSession.singleton.curEntity.netIdentity.connectionToClient);
+            // TODO Sempre que um novo player entrar, o curEntity precisa re-calcular as posições andáveis para o caso de o novo player spawnar próximo do curEntity
+            NetworkSession.singleton.TargetDoTurn(NetworkSession.singleton.curEntity.netIdentity.connectionToClient);
         }
     }
 }
