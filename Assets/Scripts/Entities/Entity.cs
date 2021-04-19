@@ -27,12 +27,6 @@ public class Entity : NetworkBehaviour, IComparable
         transform.SetParent(GameObject.FindObjectOfType<Session>().playersTransform);
     }
 
-    [TargetRpc]
-    public void TargetClearMarkerAndPathInstances(NetworkConnection target) {
-        TileManager.singleton.ClearInstances();
-        TileManager.singleton.ClearPathInstances();
-    }
-
     // Informações visuais - Ainda indisponíveis devido a falta de um serializer
     // public Image entitySprite;
     // public Image entityIcon;

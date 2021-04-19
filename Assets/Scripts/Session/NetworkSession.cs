@@ -21,7 +21,7 @@ public class NetworkSession : NetworkBehaviour
     }
 
     [TargetRpc]
-    public void TargetCheckForMyTurn(NetworkConnection target) {
+    public void TargetDoTurn(NetworkConnection target) {
         Entity targetPlayer = target.identity.GetComponent<Entity>(); // Tentei usar o curEntity ao invés do targetPlayer, mas as vezes o curEntity não sincronizava a tempo
 
         TileManager.singleton.InstantiateTile(targetPlayer.gridCoord, TileManager.MarkerEnum.EntityPos);
@@ -35,11 +35,6 @@ public class NetworkSession : NetworkBehaviour
                     TileManager.singleton.InstantiateTile(new Vector2Int(i + playerMovement.movements.startRow,j + playerMovement.movements.startCol), TileManager.MarkerEnum.CanWalkYes);
     }
 
-    [TargetRpc]
-    public void TargetActions(NetworkConnection target) {
-        skillPanel.SetActive(true);
-    }
-
     // Movimenta o personagem
     [Command(requiresAuthority = false)]
     public void CmdMove(Vector2Int goal, NetworkConnectionToClient sender = null){
@@ -47,12 +42,16 @@ public class NetworkSession : NetworkBehaviour
             return;
         }
         // Atualiza matriz de posições
-        NetworkMap.singleton.MoveEntity(curEntity.GetComponent<Player>().gridCoord, goal);
+        NetworkMap.singleton.MoveEntity(curEntity.gridCoord, goal);
         // Executa movimentação do jogador
         curEntity.gridCoord = goal;
-        curEntity.TargetClearMarkerAndPathInstances(curEntity.netIdentity.connectionToClient);
 
-        TargetActions(curEntity.netIdentity.connectionToClient);
+        TargetSelectSkill(curEntity.netIdentity.connectionToClient);
+    }
+
+    [TargetRpc]
+    public void TargetSelectSkill(NetworkConnection target) {
+        skillPanel.SetActive(true);
     }
 
     // Movimenta o personagem
@@ -95,7 +94,6 @@ public class NetworkSession : NetworkBehaviour
         }
     }
 
-    [Command(requiresAuthority = false)]
     void NextTurn() {
         turnQueue.Remove(curEntity);
         curEntity.turn++;
@@ -104,7 +102,7 @@ public class NetworkSession : NetworkBehaviour
 
         foreach (Entity entity in turnQueue) {
             curEntity = entity;
-            TargetCheckForMyTurn(curEntity.netIdentity.connectionToClient);
+            TargetDoTurn(curEntity.netIdentity.connectionToClient);
             break;
         }
     }
