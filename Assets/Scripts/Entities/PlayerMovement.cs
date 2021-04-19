@@ -14,7 +14,6 @@ public class PlayerMovement : NetworkBehaviour{
 
     // Calcula e exibe movimentações possíveis usando A*
     public void GetAvailableMovements(Vector2Int pos){
-        // Debug.Log("PlayerMovement:32 - GetAvailableMovements(" + pos + ")");
         int availableMoves = GetMovementDistance();
         // Calcula os limites da movimentação do personagem no mapa
         int startRow = (Map.singleton.IsPositionInMap(pos.x - availableMoves, pos.y)) ? pos.x - availableMoves : 0;
@@ -98,7 +97,7 @@ public class PlayerMovement : NetworkBehaviour{
         path.Push(dir);
         // Instancia seta no mapa e define primeira direção
         curDir = VoxelData.GetDirectionIndex(dir);
-        TileManager.singleton.InstantiatePathTile(previous, curDir, BlockData.PathEnum.Arrow);
+        TileManager.singleton.InstantiatePathTile(previous, curDir, TileManager.PathEnum.Arrow);
         
         while(!(cur.x == -1 && cur.y == -1)){
             // Atualiza posições
@@ -111,10 +110,10 @@ public class PlayerMovement : NetworkBehaviour{
                 dir = new Vector2Int(previous.x - cur.x, previous.y - cur.y);
                 curDir = VoxelData.GetDirectionIndex(dir);
                 // Avalia qual será o tile utilizado na posição "previous"
-                if(previousDir == curDir) TileManager.singleton.InstantiatePathTile(previous, previousDir, BlockData.PathEnum.Line);
+                if(previousDir == curDir) TileManager.singleton.InstantiatePathTile(previous, previousDir, TileManager.PathEnum.Line);
                 else{
                     VoxelData.MoveDirection tileDir = VoxelData.GetCurveDirection(previousDir, curDir);
-                    TileManager.singleton.InstantiatePathTile(previous, tileDir, BlockData.PathEnum.Curve);
+                    TileManager.singleton.InstantiatePathTile(previous, tileDir, TileManager.PathEnum.Curve);
                 }
                 // Armazena posição atual na pilha
                 path.Push(dir);

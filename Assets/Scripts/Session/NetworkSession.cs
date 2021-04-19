@@ -13,7 +13,6 @@ public class NetworkSession : NetworkBehaviour
     GameObject skillPanel;
 
     public void Awake() {
-        // Debug.Log("NetworkSession:12 - Awake()");
         if (singleton != null) {
             Debug.LogWarning("Houve uma tentativa de instanciar mais de um NetworkSession");
             Destroy(this);
@@ -23,10 +22,9 @@ public class NetworkSession : NetworkBehaviour
 
     [TargetRpc]
     public void TargetCheckForMyTurn(NetworkConnection target) {
-        // Debug.Log("NetworkSession:21 - TargetCheckForMyTurn(" + target.identity.netId + ") " + target.identity.GetComponent<Entity>());
         Entity targetPlayer = target.identity.GetComponent<Entity>(); // Tentei usar o curEntity ao invés do targetPlayer, mas as vezes o curEntity não sincronizava a tempo
 
-        TileManager.singleton.InstantiateMarkerTile(targetPlayer.gridCoord, BlockData.MarkerEnum.EntityPos);
+        TileManager.singleton.InstantiateTile(targetPlayer.gridCoord, TileManager.MarkerEnum.EntityPos);
         // Calcula movimentos possíveis
         PlayerMovement playerMovement = targetPlayer.GetComponent<PlayerMovement>();
         playerMovement.GetAvailableMovements(targetPlayer.gridCoord);
@@ -34,7 +32,7 @@ public class NetworkSession : NetworkBehaviour
         for(int i = 0; i <= playerMovement.movements.endRow - playerMovement.movements.startRow; i++)
             for(int j = 0; j <= playerMovement.movements.endCol - playerMovement.movements.startCol; j++)
                 if(playerMovement.movements.visited[i,j]) 
-                    TileManager.singleton.InstantiateMarkerTile(new Vector2Int(i + playerMovement.movements.startRow,j + playerMovement.movements.startCol), BlockData.MarkerEnum.CanWalkYes);
+                    TileManager.singleton.InstantiateTile(new Vector2Int(i + playerMovement.movements.startRow,j + playerMovement.movements.startCol), TileManager.MarkerEnum.CanWalkYes);
     }
 
     [TargetRpc]
@@ -60,7 +58,6 @@ public class NetworkSession : NetworkBehaviour
     // Movimenta o personagem
     [Command(requiresAuthority = false)]
     public void CmdUseSkill(Skill skill, Vector2Int pos){
-        Debug.Log("Applying skills " + skill + " " + skill.GetType());
         ApplySkills(skill, pos);
         NextTurn();
     }
@@ -80,10 +77,7 @@ public class NetworkSession : NetworkBehaviour
         // Insere a posição inicial nas listas
         nodesToVisit.Enqueue((curPos, 0));
         visited[curPos.x - startRow, curPos.y - startCol] = true;
-        Debug.Log("Applying on coord " + curPos + ":");
-        Debug.Log("Antes: " + NetworkMap.singleton.GetMapContent(curPos.x, curPos.y) + ":");
         skill.Apply(NetworkMap.singleton.GetMapContent(curPos.x, curPos.y));
-        Debug.Log("Depois: " + NetworkMap.singleton.GetMapContent(curPos.x, curPos.y) + ":");
 
         // Executa BFS
         while(nodesToVisit.Count > 0){
@@ -94,10 +88,7 @@ public class NetworkSession : NetworkBehaviour
                 Vector2Int neighbor = new Vector2Int(toProcess.Item1.x + move.x, toProcess.Item1.y + move.y);
                 if (Map.singleton.IsPositionInMap(neighbor.x, neighbor.y) && !visited[neighbor.x - startRow, neighbor.y - startCol] && toProcess.Item2 + 1 < availableMoves) {
                     visited[neighbor.x - startRow, neighbor.y - startCol] = true;
-                    Debug.Log("Applying on coord " + neighbor + ":");
-                    Debug.Log("Antes: " + NetworkMap.singleton.GetMapContent(neighbor.x, neighbor.y) + ":");
                     skill.Apply(NetworkMap.singleton.GetMapContent(neighbor.x, neighbor.y));
-                    Debug.Log("Depois: " + NetworkMap.singleton.GetMapContent(neighbor.x, neighbor.y) + ":");
                     nodesToVisit.Enqueue((neighbor, toProcess.Item2 + 1));
                 }
             }

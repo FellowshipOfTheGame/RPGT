@@ -84,8 +84,8 @@ public class Skill
     public int cost;
 
     public virtual void Apply(BlockContent block) {
-        // Debug.LogError("Acessando Apply da classe base de Skill");
-        // throw new MethodAccessException();
+        Debug.LogError("Acessando Apply da classe base de Skill");
+        throw new MethodAccessException();
     }
 }
 

@@ -5,13 +5,8 @@ using UnityEngine.UI;
 
 public class BlockData : MonoBehaviour{
     public List<BlockType> blockList = new List<BlockType>();
-    public List<GameObject> markerList = new List<GameObject>();
-    public List<GameObject> pathList = new List<GameObject>();
 
     public enum BlockEnum {Air, Default, Ground, Stone, Sand, RedSand};
-    public enum MarkerEnum {EntityPos, CanWalkYes, Attack, AttackRange};
-
-    public enum PathEnum {Arrow, Curve, Line};
 
     public void Start() {
         BlockContent.blockList = blockList;
