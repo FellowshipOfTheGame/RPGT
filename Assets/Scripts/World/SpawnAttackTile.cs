@@ -16,7 +16,7 @@ public class SpawnAttackTile : MonoBehaviour
 
     private void OnMouseOver(){
         // Debug.Log("Hovering attack range tile");
-        if (tileManager.markerLayers[(int) TileManager.MarkerEnum.Attack].childCount == 0)
+        if (tileManager.tileLayers[(int) TileManager.MarkerEnum.Attack].childCount == 0)
             Player.localPlayer.GetComponent<PlayerAttack>().DrawAttackTiles(coord);
     }
 

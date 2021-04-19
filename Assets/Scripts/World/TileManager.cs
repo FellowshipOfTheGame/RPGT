@@ -6,11 +6,11 @@ public class TileManager : MonoBehaviour{
     public static TileManager singleton;
     Transform pathLayer;
     [HideInInspector]
-    public List<Transform> markerLayers = new List<Transform>();
+    public List<Transform> tileLayers = new List<Transform>();
     [SerializeField]
-    List<GameObject> markerList = new List<GameObject>();
+    List<GameObject> tilePrefabs = new List<GameObject>();
     [SerializeField]
-    List<GameObject> pathList = new List<GameObject>();
+    List<GameObject> pathPrefabs = new List<GameObject>();
     public enum MarkerEnum {EntityPos, CanWalkYes, AttackRange, Attack};
     public enum PathEnum {Arrow, Curve, Line};
     private BlockData blockData;
@@ -34,15 +34,15 @@ public class TileManager : MonoBehaviour{
         foreach (string markerName in Enum.GetNames(typeof(TileManager.MarkerEnum))) {
             newObj = new GameObject(markerName);
             newObj.transform.SetParent(transform);
-            markerLayers.Add(newObj.transform);
+            tileLayers.Add(newObj.transform);
         }
 
     }
 
     // Instancia marcador no cenário
     public void InstantiateTile(Vector2Int pos, TileManager.MarkerEnum tile){
-        GameObject entityPosPath = Instantiate(markerList[(int)tile], new Vector3(pos.x + map.centerOffset, 1f + (((int) tile) + 1) / 1000f, pos.y + map.centerOffset), Quaternion.identity);
-        entityPosPath.transform.SetParent(markerLayers[(int) tile]);
+        GameObject entityPosPath = Instantiate(tilePrefabs[(int)tile], new Vector3(pos.x + map.centerOffset, 1f + (((int) tile) + 1) / 1000f, pos.y + map.centerOffset), Quaternion.identity);
+        entityPosPath.transform.SetParent(tileLayers[(int) tile]);
         entityPosPath.GetComponent<PathCoord>().coord = pos;
         entityPosPath.name = pos.x + "," + pos.y;
         entityPosPath.SetActive(true);
@@ -50,7 +50,7 @@ public class TileManager : MonoBehaviour{
 
     // Instancia caminho no cenário
     public void InstantiatePathTile(Vector2Int pos, VoxelData.MoveDirection dir, TileManager.PathEnum tile){
-        GameObject pathTile = Instantiate(pathList[(int)tile], new Vector3(pos.x + map.centerOffset, 1f + (Enum.GetNames(typeof(TileManager.MarkerEnum)).Length + 1) / 1000f, pos.y + map.centerOffset), Quaternion.identity);
+        GameObject pathTile = Instantiate(pathPrefabs[(int)tile], new Vector3(pos.x + map.centerOffset, 1f + (Enum.GetNames(typeof(TileManager.MarkerEnum)).Length + 1) / 1000f, pos.y + map.centerOffset), Quaternion.identity);
         pathTile.transform.SetParent(pathLayer);
         pathTile.SetActive(true);
         // Checa a direção da seta para efetuar rotação do objeto
@@ -76,7 +76,7 @@ public class TileManager : MonoBehaviour{
 
     // Remove todas as instâncias de marcador do cenário
     public void ClearInstances(TileManager.MarkerEnum tile){
-        foreach(Transform child in markerLayers[(int) tile]) 
+        foreach(Transform child in tileLayers[(int) tile]) 
             Destroy(child.gameObject);  
     }
 }
