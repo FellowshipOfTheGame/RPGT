@@ -23,14 +23,12 @@ public class Entity : NetworkBehaviour, IComparable
     /// <para>Objects on the host have this function called, as there is a local client on the host. The values of SyncVars on object are guaranteed to be initialized correctly with the latest state from the server when this function is called on the client.</para>
     /// </summary>
     public override void OnStartClient() {
-        // Debug.Log("Entity:13 - OnStartClient()");
         // Sets the player transform
         transform.SetParent(GameObject.FindObjectOfType<Session>().playersTransform);
     }
 
     [TargetRpc]
     public void TargetClearMarkerAndPathInstances(NetworkConnection target) {
-        // Debug.Log(name + " " + netId);
         TileManager.singleton.ClearInstances();
         TileManager.singleton.ClearPathInstances();
     }

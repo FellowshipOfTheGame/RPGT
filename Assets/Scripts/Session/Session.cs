@@ -29,7 +29,6 @@ public class Session : MonoBehaviour{
     public TileManager tileManager;
 
     void Start(){
-        // Debug.Log("Session:36 - Start()");
         if (singleton != null) {
             Destroy(this);
         }

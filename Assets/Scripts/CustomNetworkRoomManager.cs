@@ -32,8 +32,6 @@ public class CustomNetworkRoomManager : NetworkManager
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
         base.OnServerAddPlayer(conn);
-        // Debug.Log("CustomNetworkRoomManager:31 - OnServerAddPlayer(" + conn + ")");
-
         // Spawns the player, fills its position on the mapContent and translates him to such position
         Entity player = conn.identity.GetComponent<Entity>();
         Vector2Int spawnPos = networkMap.GetEmptyPosition();

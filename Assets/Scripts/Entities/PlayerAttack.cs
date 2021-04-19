@@ -60,7 +60,6 @@ public class PlayerAttack : MonoBehaviour
     }
 
     public void DrawAttackTiles(Vector2Int attackPos) {
-        // Debug.Log("Drawing attack tiles");
         // Instanciar os tiles de attackRange
         MovementData movements = GetRangeAttackMovements(attackPos, false);
         // Coloca marcador nas posições onde o personagem pode andar

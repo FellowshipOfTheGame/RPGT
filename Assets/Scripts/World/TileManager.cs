@@ -17,7 +17,6 @@ public class TileManager : MonoBehaviour{
     private Map map;
 
     private void Awake() {
-        // Debug.Log("TileManager:12 - Awake()");
         if (singleton != null) {
             Debug.LogWarning("Houve uma tentativa de setar 2 TileManagers");
             Destroy(this);
