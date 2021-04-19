@@ -26,7 +26,7 @@ public class NetworkSession : NetworkBehaviour
         // Debug.Log("NetworkSession:21 - TargetCheckForMyTurn(" + target.identity.netId + ") " + target.identity.GetComponent<Entity>());
         Entity targetPlayer = target.identity.GetComponent<Entity>(); // Tentei usar o curEntity ao invés do targetPlayer, mas as vezes o curEntity não sincronizava a tempo
 
-        TileManager.singleton.InstantiateMarkerTile(targetPlayer.gridCoord, BlockData.MarkerEnum.EntityPos);
+        TileManager.singleton.InstantiateMarkerTile(targetPlayer.gridCoord, TileManager.MarkerEnum.EntityPos);
         // Calcula movimentos possíveis
         PlayerMovement playerMovement = targetPlayer.GetComponent<PlayerMovement>();
         playerMovement.GetAvailableMovements(targetPlayer.gridCoord);
@@ -34,7 +34,7 @@ public class NetworkSession : NetworkBehaviour
         for(int i = 0; i <= playerMovement.movements.endRow - playerMovement.movements.startRow; i++)
             for(int j = 0; j <= playerMovement.movements.endCol - playerMovement.movements.startCol; j++)
                 if(playerMovement.movements.visited[i,j]) 
-                    TileManager.singleton.InstantiateMarkerTile(new Vector2Int(i + playerMovement.movements.startRow,j + playerMovement.movements.startCol), BlockData.MarkerEnum.CanWalkYes);
+                    TileManager.singleton.InstantiateMarkerTile(new Vector2Int(i + playerMovement.movements.startRow,j + playerMovement.movements.startCol), TileManager.MarkerEnum.CanWalkYes);
     }
 
     [TargetRpc]

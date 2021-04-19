@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class TileManager : MonoBehaviour{
     public static TileManager singleton;
+    public List<GameObject> markerList = new List<GameObject>();
+    public List<GameObject> pathList = new List<GameObject>();
+    public enum MarkerEnum {EntityPos, CanWalkYes, Attack, AttackRange};
+    public enum PathEnum {Arrow, Curve, Line};
     public Transform markerInstanceList;
     public Transform pathInstanceList;
     public Transform attackInstanceList;
@@ -23,14 +27,14 @@ public class TileManager : MonoBehaviour{
     }
 
     // Instancia marcador no cenário
-    public void InstantiateMarkerTile(Vector2Int pos, BlockData.MarkerEnum tile, bool useAttackInstanceList = false){
+    public void InstantiateMarkerTile(Vector2Int pos, TileManager.MarkerEnum tile, bool useAttackInstanceList = false){
         GameObject entityPosPath;
         if (useAttackInstanceList) {
-            entityPosPath = Instantiate(blockData.markerList[(int)tile], new Vector3(pos.x + map.centerOffset, 1.002f, pos.y + map.centerOffset), Quaternion.identity);
+            entityPosPath = Instantiate(markerList[(int)tile], new Vector3(pos.x + map.centerOffset, 1.002f, pos.y + map.centerOffset), Quaternion.identity);
             entityPosPath.transform.SetParent(attackInstanceList);
         }
         else {
-            entityPosPath = Instantiate(blockData.markerList[(int)tile], new Vector3(pos.x + map.centerOffset, 1.001f, pos.y + map.centerOffset), Quaternion.identity);
+            entityPosPath = Instantiate(markerList[(int)tile], new Vector3(pos.x + map.centerOffset, 1.001f, pos.y + map.centerOffset), Quaternion.identity);
             entityPosPath.transform.SetParent(markerInstanceList);
         }
         entityPosPath.GetComponent<PathCoord>().coord = pos;
@@ -39,8 +43,8 @@ public class TileManager : MonoBehaviour{
     }
 
     // Instancia caminho no cenário
-    public void InstantiatePathTile(Vector2Int pos, VoxelData.MoveDirection dir, BlockData.PathEnum tile){
-        GameObject pathTile = Instantiate(blockData.pathList[(int)tile], new Vector3(pos.x + map.centerOffset, 1.003f, pos.y + map.centerOffset), Quaternion.identity);
+    public void InstantiatePathTile(Vector2Int pos, VoxelData.MoveDirection dir, TileManager.PathEnum tile){
+        GameObject pathTile = Instantiate(pathList[(int)tile], new Vector3(pos.x + map.centerOffset, 1.003f, pos.y + map.centerOffset), Quaternion.identity);
         pathTile.transform.SetParent(pathInstanceList);
         pathTile.SetActive(true);
         // Checa a direção da seta para efetuar rotação do objeto

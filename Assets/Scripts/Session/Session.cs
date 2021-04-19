@@ -137,14 +137,14 @@ public class Session : MonoBehaviour{
         curEntity = (isPlayer) ? players[entityInitiative.id] : enemies[entityInitiative.id - numOfPlayers];
         Vector2Int entityCoord = curEntity.GetComponent<Player>().gridCoord;
         // Coloca marcador na posição atual do personagem
-        tileManager.InstantiateMarkerTile(entityCoord, BlockData.MarkerEnum.EntityPos);
+        tileManager.InstantiateMarkerTile(entityCoord, TileManager.MarkerEnum.EntityPos);
         // Calcula movimentos possíveis
         movements = curEntity.GetComponent<PlayerMovement>().GetAvailableMovements(entityCoord);
         // Coloca marcador nas posições onde o personagem pode andar
         for(int i = 0; i <= movements.endRow - movements.startRow; i++)
             for(int j = 0; j <= movements.endCol - movements.startCol; j++)
                 if(movements.visited[i,j]) 
-                    tileManager.InstantiateMarkerTile(new Vector2Int(i + movements.startRow,j + movements.startCol), BlockData.MarkerEnum.CanWalkYes);  
+                    tileManager.InstantiateMarkerTile(new Vector2Int(i + movements.startRow,j + movements.startCol), TileManager.MarkerEnum.CanWalkYes);  
         // Atualiza lista e limpa marcadores
         turnQueue.RemoveAt(0);
         turnQueue.Add(entityInitiative);

@@ -17,7 +17,7 @@ public class PlayerAttack : MonoBehaviour
         for(int i = 0; i <= movements.endRow - movements.startRow; i++)
             for(int j = 0; j <= movements.endCol - movements.startCol; j++)
                 if(movements.visited[i,j] && !(playerPos.x == movements.startRow + i && playerPos.y == movements.startCol + j)) 
-                    TileManager.singleton.InstantiateMarkerTile(new Vector2Int(i + movements.startRow,j + movements.startCol), BlockData.MarkerEnum.AttackRange);
+                    TileManager.singleton.InstantiateMarkerTile(new Vector2Int(i + movements.startRow,j + movements.startCol), TileManager.MarkerEnum.AttackRange);
     }
 
     MovementData GetRangeAttackMovements(Vector2Int curPos, bool rangeOrArea = true) {
@@ -67,6 +67,6 @@ public class PlayerAttack : MonoBehaviour
         for(int i = 0; i <= movements.endRow - movements.startRow; i++)
             for(int j = 0; j <= movements.endCol - movements.startCol; j++)
                 if(movements.visited[i,j])
-                    TileManager.singleton.InstantiateMarkerTile(new Vector2Int(i + movements.startRow,j + movements.startCol), BlockData.MarkerEnum.Attack, true);
+                    TileManager.singleton.InstantiateMarkerTile(new Vector2Int(i + movements.startRow,j + movements.startCol), TileManager.MarkerEnum.Attack, true);
     }
 }
