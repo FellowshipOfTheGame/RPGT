@@ -62,10 +62,8 @@ public class TileManager : MonoBehaviour{
 
     // Remove todos as instâncias de caminho do cenário
     public void ClearPathInstances(){
-        foreach(Transform child in pathLayer) {
-            Debug.Log($"Destroying {child.name}");
-            Destroy(child.gameObject);  
-        }
+        foreach(Transform child in pathLayer)
+            Destroy(child.gameObject);
     }
 
     // Remove todas as instâncias de marcador do cenário
