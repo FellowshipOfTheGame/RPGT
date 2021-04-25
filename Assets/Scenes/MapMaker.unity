@@ -255,7 +255,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
       propertyPath: blockID
-      value: 3
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
+      propertyPath: voxelType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3669963532279270116, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
       propertyPath: m_Name
@@ -483,7 +487,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
       propertyPath: blockID
-      value: 5
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
+      propertyPath: voxelType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3669963532279270116, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
       propertyPath: m_Name
@@ -652,6 +660,7 @@ GameObject:
   - component: {fileID: 799624740}
   - component: {fileID: 799624742}
   - component: {fileID: 799624741}
+  - component: {fileID: 799624743}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -724,12 +733,44 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &799624743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 799624739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1 &849484408 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3669963532279270116, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
   m_PrefabInstance: {fileID: 1893167851}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &931573780
+--- !u!1 &876449409
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -737,8 +778,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 931573782}
-  - component: {fileID: 931573781}
+  - component: {fileID: 876449411}
+  - component: {fileID: 876449410}
   m_Layer: 0
   m_Name: DataHandler
   m_TagString: DataHandler
@@ -746,33 +787,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &931573781
+--- !u!114 &876449410
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 931573780}
+  m_GameObject: {fileID: 876449409}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b06b7eacb955b1448299665e58e037c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   blockList:
-  - blockName: Air
-    canWalk: 0
-    isSolid: 0
-    icon: {fileID: 0}
-    backFaceTexture: 0
-    frontFaceTexture: 0
-    topFaceTexture: 0
-    bottomFaceTexture: 0
-    leftFaceTexture: 0
-    rightFaceTexture: 0
   - blockName: Default
     canWalk: 1
-    isSolid: 1
-    icon: {fileID: -2978653956524333172, guid: ff22d4b1d5cedec4a80900e9f41f290b, type: 3}
+    icon: {fileID: -9048387037246611838, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
     backFaceTexture: 0
     frontFaceTexture: 0
     topFaceTexture: 0
@@ -781,8 +811,7 @@ MonoBehaviour:
     rightFaceTexture: 0
   - blockName: Ground
     canWalk: 1
-    isSolid: 1
-    icon: {fileID: -299690340437171572, guid: ff22d4b1d5cedec4a80900e9f41f290b, type: 3}
+    icon: {fileID: -1003240340476108059, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
     backFaceTexture: 2
     frontFaceTexture: 2
     topFaceTexture: 3
@@ -791,8 +820,7 @@ MonoBehaviour:
     rightFaceTexture: 2
   - blockName: Stone
     canWalk: 1
-    isSolid: 1
-    icon: {fileID: 3357360333254942192, guid: ff22d4b1d5cedec4a80900e9f41f290b, type: 3}
+    icon: {fileID: 8548054500567881078, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
     backFaceTexture: 8
     frontFaceTexture: 8
     topFaceTexture: 8
@@ -801,8 +829,7 @@ MonoBehaviour:
     rightFaceTexture: 8
   - blockName: Sand
     canWalk: 1
-    isSolid: 1
-    icon: {fileID: -1290855366162983238, guid: ff22d4b1d5cedec4a80900e9f41f290b, type: 3}
+    icon: {fileID: 4814481203266816425, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
     backFaceTexture: 4
     frontFaceTexture: 4
     topFaceTexture: 4
@@ -811,29 +838,50 @@ MonoBehaviour:
     rightFaceTexture: 4
   - blockName: RedSand
     canWalk: 1
-    isSolid: 1
-    icon: {fileID: -2248273014285675650, guid: ff22d4b1d5cedec4a80900e9f41f290b, type: 3}
+    icon: {fileID: 206441913591338368, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
     backFaceTexture: 5
     frontFaceTexture: 5
     topFaceTexture: 5
     bottomFaceTexture: 5
     leftFaceTexture: 5
     rightFaceTexture: 5
-  markerList:
-  - {fileID: 1883263453598118730, guid: 8f11d4b08307db245990441259e1c7c7, type: 3}
-  - {fileID: 8852340682133289868, guid: f99dc145e5d4c714ca3f9094d6d43c2e, type: 3}
-  - {fileID: 6126592508508540394, guid: 9e757e7018555e54c96c2a6f1129f284, type: 3}
-  pathList:
-  - {fileID: 3233963116851828522, guid: b3b38336807ac474fa8a0d5c480c94a4, type: 3}
-  - {fileID: 3474349996016314312, guid: e2c1d990e8986fa4da8dd7d4badc1c9a, type: 3}
-  - {fileID: 9097460898544929043, guid: 7fbfb1156910edb459996962c71d35f8, type: 3}
---- !u!4 &931573782
+  - blockName: SandStone
+    canWalk: 1
+    icon: {fileID: -3475620171103913013, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
+    backFaceTexture: 7
+    frontFaceTexture: 7
+    topFaceTexture: 7
+    bottomFaceTexture: 7
+    leftFaceTexture: 7
+    rightFaceTexture: 7
+  fluidList:
+  - blockName: Water
+    canWalk: 0
+    icon: {fileID: -6506628518334011501, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
+    backFaceTexture: 9
+    frontFaceTexture: 9
+    topFaceTexture: 9
+    bottomFaceTexture: 9
+    leftFaceTexture: 9
+    rightFaceTexture: 9
+    material: {fileID: 2100000, guid: ffb8d767e8cb65440978ec377596053e, type: 2}
+  - blockName: Lava
+    canWalk: 0
+    icon: {fileID: 8465270892762914595, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
+    backFaceTexture: 10
+    frontFaceTexture: 10
+    topFaceTexture: 10
+    bottomFaceTexture: 10
+    leftFaceTexture: 10
+    rightFaceTexture: 10
+    material: {fileID: 0}
+--- !u!4 &876449411
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 931573780}
+  m_GameObject: {fileID: 876449409}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -1410,6 +1458,10 @@ PrefabInstance:
       propertyPath: blockID
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
+      propertyPath: voxelType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3669963532279270116, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
       propertyPath: m_Name
       value: Slot 5
@@ -1685,7 +1737,7 @@ MonoBehaviour:
   - {fileID: 1298305592}
   - {fileID: 973246986}
   - {fileID: 177321370}
-  blockEditPrefab: {fileID: 3743361674442354146, guid: fbcb23265fa37b747a2553359d415d49, type: 3}
+  blockEditPrefab: {fileID: 7771458051233720221, guid: 67a775b7cebb281458d30a47404c0dcc, type: 3}
   blockEditMap: {fileID: 2030497742}
   notSelected: {fileID: -8358113870863188520, guid: c6a033249962e53479c0ffbb50573fc2, type: 3}
   selected: {fileID: 6621489622065687178, guid: c6a033249962e53479c0ffbb50573fc2, type: 3}
@@ -1705,6 +1757,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
       propertyPath: blockID
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
+      propertyPath: voxelType
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3669963532279270116, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
@@ -1822,6 +1878,87 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3669963532279270119, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
   m_PrefabInstance: {fileID: 1893167851}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1904243494
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1904243498}
+  - component: {fileID: 1904243497}
+  - component: {fileID: 1904243496}
+  m_Layer: 0
+  m_Name: Sphere
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!23 &1904243496
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1904243494}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1904243497
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1904243494}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1904243498
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1904243494}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4, y: 0, z: 4}
+  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1913859247
 GameObject:
   m_ObjectHideFlags: 0
@@ -1952,8 +2089,16 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
+      propertyPath: index
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
       propertyPath: blockID
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
+      propertyPath: voxelType
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3669963532279270116, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
       propertyPath: m_Name
@@ -2075,7 +2220,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
       propertyPath: blockID
-      value: 4
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669963532279270115, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
+      propertyPath: voxelType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3669963532279270116, guid: b2c752bb0fa15e6458042195de9a80c5, type: 3}
       propertyPath: m_Name

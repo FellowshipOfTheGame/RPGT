@@ -19,7 +19,7 @@ public class CustomNetworkRoomManager : NetworkManager
         // Instancia o mapa geral que é sincronizado entre todos os players
 		List<BlockContent> tmpMapContent = new List<BlockContent>();
         for (int i = 0; i < networkMap.mapRows * networkMap.mapCols; i++)
-            tmpMapContent.Add(new BlockContent(null, (int) BlockData.BlockEnum.Ground));
+            tmpMapContent.Add(new BlockContent(null, VoxelData.VoxelType.Block, (int)BlockData.BlockEnum.Ground));
 
         networkMap.mapContent.AddRange(tmpMapContent);
 	}

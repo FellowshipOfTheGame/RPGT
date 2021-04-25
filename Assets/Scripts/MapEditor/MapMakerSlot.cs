@@ -6,4 +6,5 @@ using UnityEngine.UI;
 public class MapMakerSlot : MonoBehaviour{
        public int index;
        public int blockID;
+       public VoxelData.VoxelType voxelType;
 }

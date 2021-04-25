@@ -10,13 +10,15 @@ public class MapMaker : MonoBehaviour{
     private int newSlotIndex;
     private int curSlotIndex;
     public static Tool curTool;
-    public static int curBlockID;
+    public static int curVoxelID;
+    public static int curVoxelType;
     private readonly int hotbarSize = 6;
 
     public GameObject[] hotbar;
     public GameObject[] toolButtons;
 
     public static List<BlockType> blockList;
+    public static List<FluidType> fluidList;
 
     public static Map map;
     public GameObject blockEditPrefab;
@@ -37,20 +39,26 @@ public class MapMaker : MonoBehaviour{
         curTool = Tool.None;
         // Recebe conteúdo da posição inicial da hotbar
         curSlotIndex = 0;
-        curBlockID = hotbar[0].GetComponent<MapMakerSlot>().blockID;
+        curVoxelID = hotbar[0].GetComponent<MapMakerSlot>().blockID;
+        curVoxelType = (int)hotbar[0].GetComponent<MapMakerSlot>().voxelType;
         // Referencia objetos necessários para o controle dos blocos do mapa
         map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
         highlightBlock = GameObject.Find("BlockHighlight");
         highlightBlock.SetActive(false);
         blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;
+        fluidList = GameObject.Find("DataHandler").GetComponent<BlockData>().fluidList;
         // Inicializa hotbar de edição dos blocos
         for(int i = 0; i < hotbarSize; i++){
             int pos = i;
             int slotIndex = hotbar[i].GetComponent<MapMakerSlot>().index;
             int blockID = hotbar[i].GetComponent<MapMakerSlot>().blockID;
+            int voxelType = (int)hotbar[i].GetComponent<MapMakerSlot>().voxelType;
             hotbar[pos].GetComponentsInChildren<Image>()[0].enabled = true;
             hotbar[pos].GetComponentsInChildren<Image>()[0].sprite = notSelected;
-            hotbar[pos].GetComponentsInChildren<Image>()[1].sprite = blockList[blockID].icon;
+            if(voxelType == (int)VoxelData.VoxelType.Block)
+                hotbar[pos].GetComponentsInChildren<Image>()[1].sprite = blockList[blockID].icon;
+            else if(voxelType == (int)VoxelData.VoxelType.Fluid)
+                hotbar[pos].GetComponentsInChildren<Image>()[1].sprite = fluidList[blockID].icon;
             hotbar[pos].GetComponent<Button>().onClick.AddListener(() => UpdateIndex(slotIndex));
         }
         // Altera sprite da posição inicial da hotbar
@@ -85,7 +93,8 @@ public class MapMaker : MonoBehaviour{
 
     public void UpdateIndex(int slotIndex){
         if(curSlotIndex != slotIndex){
-            curBlockID = hotbar[slotIndex].GetComponent<MapMakerSlot>().blockID;
+            curVoxelID = hotbar[slotIndex].GetComponent<MapMakerSlot>().blockID;
+            curVoxelType = (int)hotbar[slotIndex].GetComponent<MapMakerSlot>().voxelType;
             hotbar[curSlotIndex].GetComponent<Image>().sprite = notSelected;
             hotbar[slotIndex].GetComponent<Image>().sprite = selected;
             curSlotIndex = slotIndex;
@@ -114,10 +123,14 @@ public class MapMaker : MonoBehaviour{
     }
 
     public static void UpdateVoxel(Vector2Int coord){
-        if(curTool == Tool.None) map.UpdateVoxel(coord, curBlockID);
-        else if(curTool == Tool.FillAll) map.UpdateAllVoxels(curBlockID);
-        else if(curTool == Tool.Bucket && map.voxelMap[coord.x, coord.y] != curBlockID) map.FloodFill(coord, map.voxelMap[coord.x, coord.y], curBlockID);
-        else if(curTool == Tool.Erase) map.UpdateVoxel(coord, (int)BlockData.BlockEnum.Air);
+        if(curTool == Tool.None) 
+            map.UpdateVoxel(coord, curVoxelType, curVoxelID);
+        else if(curTool == Tool.FillAll) 
+            map.UpdateAllVoxels(curVoxelType, curVoxelID);
+        else if(curTool == Tool.Bucket && (map.voxelMap[coord.x, coord.y].Item1 != curVoxelType || map.voxelMap[coord.x, coord.y].Item2 != curVoxelID)) 
+            map.FloodFill(coord, map.voxelMap[coord.x, coord.y].Item1, map.voxelMap[coord.x, coord.y].Item2, curVoxelType, curVoxelID);
+        else if(curTool == Tool.Erase) 
+            map.UpdateVoxel(coord, (int)VoxelData.VoxelType.None);
     }
     
     void SelectTool(Tool tool){

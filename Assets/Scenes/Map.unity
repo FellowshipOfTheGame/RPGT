@@ -585,6 +585,29 @@ MonoBehaviour:
     bottomFaceTexture: 5
     leftFaceTexture: 5
     rightFaceTexture: 5
+  fluidList:
+  - blockName: Air
+    canWalk: 0
+    isSolid: 0
+    icon: {fileID: 0}
+    backFaceTexture: 0
+    frontFaceTexture: 0
+    topFaceTexture: 0
+    bottomFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+    shader: {fileID: 0}
+  - blockName: Water
+    canWalk: 0
+    isSolid: 1
+    icon: {fileID: 0}
+    backFaceTexture: 0
+    frontFaceTexture: 0
+    topFaceTexture: 0
+    bottomFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+    shader: {fileID: 0}
 --- !u!1001 &432391775
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -759,6 +782,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 245ea3453cca84d47b0941584b65f685, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pathLayer: {fileID: 0}
   tileLayers: []
   tilePrefabs:
   - {fileID: 1883263453598118730, guid: 8f11d4b08307db245990441259e1c7c7, type: 3}
@@ -1802,7 +1826,7 @@ MonoBehaviour:
   - {fileID: 1897068043}
   - {fileID: 432391777}
   - {fileID: 1950203297}
-  blockEditPrefab: {fileID: 3743361674442354146, guid: fbcb23265fa37b747a2553359d415d49, type: 3}
+  blockEditPrefab: {fileID: 7771458051233720221, guid: 67a775b7cebb281458d30a47404c0dcc, type: 3}
   blockEditMap: {fileID: 1200720336}
   notSelected: {fileID: -8358113870863188520, guid: c6a033249962e53479c0ffbb50573fc2, type: 3}
   selected: {fileID: 6621489622065687178, guid: c6a033249962e53479c0ffbb50573fc2, type: 3}
