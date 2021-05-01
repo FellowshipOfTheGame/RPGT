@@ -18,6 +18,7 @@ public class NetworkSession : NetworkBehaviour
             Destroy(this);
         }
         singleton = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     [TargetRpc]
