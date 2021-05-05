@@ -12,9 +12,10 @@ public class MapMaker : MonoBehaviour{
     public static Tool curTool;
     public static int curVoxelID;
     public static int curVoxelType;
-    private readonly int hotbarSize = 6;
-
-    public GameObject[] hotbar;
+    private int hotbarSize;
+    private List<GameObject> hotbar;
+    public GameObject slotPrefab;
+    public Transform slotList;
     public GameObject[] toolButtons;
 
     public static List<BlockType> blockList;
@@ -35,35 +36,19 @@ public class MapMaker : MonoBehaviour{
     private GameObject[,] blockInstances;
 
     void Start(){
+        hotbar = new List<GameObject>();
+        blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;
+        fluidList = GameObject.Find("DataHandler").GetComponent<BlockData>().fluidList;
+        ChangeHotbarContent(VoxelData.VoxelType.Block);
         // Inicializa ferramenta ativada
         curTool = Tool.None;
-        // Recebe conteúdo da posição inicial da hotbar
-        curSlotIndex = 0;
-        curVoxelID = hotbar[0].GetComponent<MapMakerSlot>().blockID;
-        curVoxelType = (int)hotbar[0].GetComponent<MapMakerSlot>().voxelType;
         // Referencia objetos necessários para o controle dos blocos do mapa
         map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
         highlightBlock = GameObject.Find("BlockHighlight");
         highlightBlock.SetActive(false);
-        blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;
-        fluidList = GameObject.Find("DataHandler").GetComponent<BlockData>().fluidList;
-        // Inicializa hotbar de edição dos blocos
-        for(int i = 0; i < hotbarSize; i++){
-            int pos = i;
-            int slotIndex = hotbar[i].GetComponent<MapMakerSlot>().index;
-            int blockID = hotbar[i].GetComponent<MapMakerSlot>().blockID;
-            int voxelType = (int)hotbar[i].GetComponent<MapMakerSlot>().voxelType;
-            hotbar[pos].GetComponentsInChildren<Image>()[0].enabled = true;
-            hotbar[pos].GetComponentsInChildren<Image>()[0].sprite = notSelected;
-            if(voxelType == (int)VoxelData.VoxelType.Block)
-                hotbar[pos].GetComponentsInChildren<Image>()[1].sprite = blockList[blockID].icon;
-            else if(voxelType == (int)VoxelData.VoxelType.Fluid)
-                hotbar[pos].GetComponentsInChildren<Image>()[1].sprite = fluidList[blockID].icon;
-            hotbar[pos].GetComponent<Button>().onClick.AddListener(() => UpdateIndex(slotIndex));
-        }
-        // Altera sprite da posição inicial da hotbar
-        hotbar[0].GetComponent<Image>().sprite = selected;
+
         lastCoord = new Vector2Int(-1,-1);
+
         // Adiciona listeners para os botões das ferramentas
         for(int i = 0; i < toolButtons.Length; i++){
             int pos = i;
@@ -73,6 +58,54 @@ public class MapMaker : MonoBehaviour{
         }
         // Instancia blocos para permitir edição do mapa
         InitBlockEditorMap();
+    }
+
+    void ChangeHotbarContent(VoxelData.VoxelType voxelType){
+        // Limpa instancias anteriores
+        for(int i = 0; i < hotbarSize; i++)
+            DestroyImmediate(hotbar[i]);
+
+        hotbarSize = 0;
+        curVoxelType = (int)voxelType;
+
+        // Recebe o tamanho da lista para instanciar os slots da toolbar
+        if(voxelType == VoxelData.VoxelType.Block) hotbarSize = blockList.Count;
+        else if(voxelType == VoxelData.VoxelType.Fluid) hotbarSize = fluidList.Count;
+
+        // Inicializa toolbar de edição dos blocos
+        for(int i = 0; i < hotbarSize; i++){
+            int pos = i;
+            // Instancia slot
+            hotbar.Add(Instantiate(slotPrefab));
+            hotbar[i].transform.SetParent(slotList);
+            hotbar[i].transform.localPosition = new Vector3(0f, 0f, 0f);
+            hotbar[i].name = "Slot " + i;
+            // Armazena índice do slot e ID do bloco
+            hotbar[i].GetComponent<MapMakerSlot>().index = pos;
+            hotbar[i].GetComponent<MapMakerSlot>().blockID = pos;
+            // Armazena valores novamente, desta vez para facilitar uso 
+            int slotIndex = hotbar[i].GetComponent<MapMakerSlot>().index;
+            int blockID = hotbar[i].GetComponent<MapMakerSlot>().blockID;
+            // Define sprite dos slots como não selecionado
+            hotbar[pos].GetComponentsInChildren<Image>()[0].enabled = true;
+            hotbar[pos].GetComponentsInChildren<Image>()[0].sprite = notSelected;
+            if(voxelType == VoxelData.VoxelType.Block)
+                hotbar[pos].GetComponentsInChildren<Image>()[1].sprite = blockList[blockID].icon;
+            else if(voxelType == VoxelData.VoxelType.Fluid)
+                hotbar[pos].GetComponentsInChildren<Image>()[1].sprite = fluidList[blockID].icon;
+            // Adiciona listener para modificar índice ativo
+            hotbar[pos].GetComponent<Button>().onClick.AddListener(() => UpdateIndex(slotIndex));
+        }
+
+        // Recebe conteúdo da posição inicial da hotbar
+        curSlotIndex = 0;
+        curVoxelID = hotbar[0].GetComponent<MapMakerSlot>().blockID;
+
+        // Altera sprite da posição inicial da hotbar
+        hotbar[0].GetComponent<Image>().sprite = selected;
+
+        // Ajusta posição da lista
+        slotList.transform.localPosition = new Vector3(50f, 0f, 0f);
     }
 
     void InitBlockEditorMap(){
@@ -94,7 +127,6 @@ public class MapMaker : MonoBehaviour{
     public void UpdateIndex(int slotIndex){
         if(curSlotIndex != slotIndex){
             curVoxelID = hotbar[slotIndex].GetComponent<MapMakerSlot>().blockID;
-            curVoxelType = (int)hotbar[slotIndex].GetComponent<MapMakerSlot>().voxelType;
             hotbar[curSlotIndex].GetComponent<Image>().sprite = notSelected;
             hotbar[slotIndex].GetComponent<Image>().sprite = selected;
             curSlotIndex = slotIndex;
@@ -113,7 +145,7 @@ public class MapMaker : MonoBehaviour{
 
         UpdateIndex(newSlotIndex);
     }
-
+    
     public static void PlaceHighlight(Vector2Int coord){
         if(coord != lastCoord){
             lastCoord = coord;

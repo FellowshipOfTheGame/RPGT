@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class BlockData : MonoBehaviour{
     public List<BlockType> blockList = new List<BlockType>();
     public List<FluidType> fluidList = new List<FluidType>();
-    public enum BlockEnum {Default, Ground, Stone, Sand, RedSand, SandStone};
+    public enum BlockEnum {Default, Ground, Stone, Sand, RedSand, SandStone, Snow};
     public enum FluidEnum {Water, Lava};
 
     public void Start() {
