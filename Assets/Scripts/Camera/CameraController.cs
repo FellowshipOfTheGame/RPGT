@@ -41,7 +41,7 @@ public class CameraController : MonoBehaviour{
             if(plane.Raycast(ray, out entry)) dragStartPosition = ray.GetPoint(entry);   
         }
 
-        if(Input.GetMouseButton(0) && !IsPointerOverUIElement()){
+        if(Input.GetMouseButton(0) && !IsPointerOverUIElement() && !MapMaker.highlightBlock.activeSelf){
             Plane plane = new Plane(Vector3.up, Vector3.zero);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             
@@ -81,6 +81,7 @@ public class CameraController : MonoBehaviour{
         transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
     }
+
     bool IsPointerOverUIElement(){
         var eventData = new PointerEventData(EventSystem.current);
         eventData.position = Input.mousePosition;

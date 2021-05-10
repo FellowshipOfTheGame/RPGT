@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +17,7 @@ public class MapMaker : MonoBehaviour{
     public GameObject slotPrefab;
     public Transform slotList;
     public GameObject[] toolButtons;
+    public List<GameObject> tabs;
 
     public static List<BlockType> blockList;
     public static List<FluidType> fluidList;
@@ -34,6 +35,16 @@ public class MapMaker : MonoBehaviour{
     public Color selectedColor;
 
     private GameObject[,] blockInstances;
+
+    public static MapMaker singleton;
+
+    private void Awake() {
+        if(singleton != null){
+            Debug.LogWarning("Houve uma tentativa de criar 2 MapMakers");
+            Destroy(this);
+        }
+        singleton = this;   
+    }
 
     void Start(){
         hotbar = new List<GameObject>();
@@ -60,11 +71,20 @@ public class MapMaker : MonoBehaviour{
         InitBlockEditorMap();
     }
 
-    void ChangeHotbarContent(VoxelData.VoxelType voxelType){
-        // Limpa instancias anteriores
-        for(int i = 0; i < hotbarSize; i++)
-            DestroyImmediate(hotbar[i]);
+    public void ChangeHotbarContent(VoxelData.VoxelType voxelType){
+        // Atualiza cor dos ícones das abas
+        foreach(GameObject tab in tabs){
+            VoxelData.VoxelType tabContent = tab.GetComponent<Tab>().tabContent;
+            Text tabIcon = tab.GetComponentInChildren<Text>();
+            tabIcon.color = (tabContent != voxelType) ? new Color(1, 1, 1) : selectedColor;
+        }
 
+        // Limpa instancias anteriores
+        foreach(GameObject item in hotbar){
+            DestroyImmediate(item);
+        }
+
+        hotbar.Clear();
         hotbarSize = 0;
         curVoxelType = (int)voxelType;
 
@@ -120,10 +140,6 @@ public class MapMaker : MonoBehaviour{
         }
     }
 
-    private void Update(){
-        UpdatedIndexByScroll();
-    }
-
     public void UpdateIndex(int slotIndex){
         if(curSlotIndex != slotIndex){
             curVoxelID = hotbar[slotIndex].GetComponent<MapMakerSlot>().blockID;
@@ -131,19 +147,6 @@ public class MapMaker : MonoBehaviour{
             hotbar[slotIndex].GetComponent<Image>().sprite = selected;
             curSlotIndex = slotIndex;
         }
-    }
-
-    public void UpdatedIndexByScroll(){
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-        newSlotIndex = curSlotIndex;
-        if(scroll != 0){
-            if(scroll > 0) newSlotIndex++;
-            else newSlotIndex--;
-            if(newSlotIndex > hotbarSize - 1) newSlotIndex = 0;
-            if(newSlotIndex < 0) newSlotIndex = hotbarSize - 1;
-        }
-
-        UpdateIndex(newSlotIndex);
     }
     
     public static void PlaceHighlight(Vector2Int coord){
