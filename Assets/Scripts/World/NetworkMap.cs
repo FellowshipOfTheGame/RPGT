@@ -22,7 +22,7 @@ public class NetworkMap : NetworkBehaviour
             // Instancia o mapa geral que é sincronizado entre todos os players
             List<BlockContent> tmpMapContent = new List<BlockContent>();
             for (int i = 0; i < mapRows * mapCols; i++)
-                tmpMapContent.Add(new BlockContent(null, (int) BlockData.BlockEnum.Ground));
+                tmpMapContent.Add(new BlockContent(null, VoxelData.VoxelType.Block, (int) BlockData.BlockEnum.Ground));
 
             mapContent.AddRange(tmpMapContent);
         }

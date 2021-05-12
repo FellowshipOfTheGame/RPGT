@@ -41,7 +41,7 @@ public class CameraController : MonoBehaviour{
             if(plane.Raycast(ray, out entry)) dragStartPosition = ray.GetPoint(entry);   
         }
 
-        if(Input.GetMouseButton(0) && !IsPointerOverUIElement() && !MapMaker.highlightBlock.activeSelf){
+        if(Input.GetMouseButton(0) && !IsPointerOverUIElement() && (!MapMaker.highlightBlock || !MapMaker.highlightBlock.activeSelf)){
             Plane plane = new Plane(Vector3.up, Vector3.zero);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             

@@ -36,6 +36,7 @@ public class PropMap : MonoBehaviour{
         GameObject propInstance = Instantiate(PropData.singleton.propList[propID].model);
         for(int x = pos.x; x < pos.x + size_x; x++){
             for(int y = pos.y; y < pos.y + size_y; y++){
+                if(!Map.singleton.IsPositionInMap(x, y)) continue;
                 propMap[x, y] = propID;
                 propInstances[new Vector2Int(x, y)] = propInstance;
             }
