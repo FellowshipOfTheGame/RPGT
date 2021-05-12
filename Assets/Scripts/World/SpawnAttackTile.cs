@@ -24,7 +24,7 @@ public class SpawnAttackTile : MonoBehaviour
     }
 
     public void OnMouseDown(){
-        NetworkSession.singleton.CmdUseSkill(Player.localPlayer.GetComponent<PlayerAttack>().curSkill, coord);
+        NetworkSession.singleton.CmdUseSkill(Player.localPlayer.GetComponent<Entity>().gridCoord, coord, Player.localPlayer.GetComponent<PlayerAttack>().curSkill);
         tileManager.ClearInstances();
     }
 }

@@ -1,4 +1,4 @@
-    using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,28 +35,26 @@ public class MapMaker : MonoBehaviour{
     public Color selectedColor;
 
     private GameObject[,] blockInstances;
-
     public static MapMaker singleton;
 
-    private void Awake() {
+    void Awake(){
         if(singleton != null){
             Debug.LogWarning("Houve uma tentativa de criar 2 MapMakers");
             Destroy(this);
         }
-        singleton = this;   
-    }
+        singleton = this;
 
-    void Start(){
         hotbar = new List<GameObject>();
         blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;
         fluidList = GameObject.Find("DataHandler").GetComponent<BlockData>().fluidList;
         ChangeHotbarContent(VoxelData.VoxelType.Block);
+        
         // Inicializa ferramenta ativada
         curTool = Tool.None;
         // Referencia objetos necessários para o controle dos blocos do mapa
         map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
         highlightBlock = GameObject.Find("BlockHighlight");
-        highlightBlock.SetActive(false);
+        highlightBlock?.SetActive(false);
 
         lastCoord = new Vector2Int(-1,-1);
 

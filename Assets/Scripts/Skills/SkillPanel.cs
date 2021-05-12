@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SpawnSkillButtons : MonoBehaviour
+public class SkillPanel : MonoBehaviour
 {
     List<Skill> skills = new List<Skill>();
     [SerializeField]
     GameObject buttonPrefab;
-    // Start is called before the first frame update
-    void Start()
-    {
-        PlayerAttack playerAttack = Player.localPlayer.GetComponent<PlayerAttack>();
-        skills = playerAttack.skills;
+
+    void Start() {
+        SpawnSkillButtons();
+        NetworkSession.singleton.skillPanel = gameObject;
+        gameObject.SetActive(false);
+    }
+
+    void SpawnSkillButtons() {
+        skills = CustomPlayerRoom.localPlayerRoom.skills;
 
         foreach (Skill skill in skills) {
             GameObject newButton = Instantiate(buttonPrefab) as GameObject;
@@ -20,7 +24,7 @@ public class SpawnSkillButtons : MonoBehaviour
             newButton.name = skill.name;
             newButton.GetComponentInChildren<Text>().text = skill.name;
             newButton.GetComponentInChildren<Button>().onClick.AddListener(() => gameObject.SetActive(false));
-            newButton.GetComponentInChildren<Button>().onClick.AddListener(() => playerAttack.UseSkill(skill));
+            newButton.GetComponentInChildren<Button>().onClick.AddListener(() => Player.localPlayer.GetComponent<PlayerAttack>().UseSkill(skill));
         }
     }
 }

@@ -9,8 +9,8 @@ public class NetworkSession : NetworkBehaviour
     public Entity curEntity = null;
     public int turn = 0;
     public static NetworkSession singleton;
-    [SerializeField]
-    GameObject skillPanel;
+    public TileManager tileManager;
+    public GameObject skillPanel;
 
     public void Awake() {
         if (singleton != null) {
@@ -18,13 +18,14 @@ public class NetworkSession : NetworkBehaviour
             Destroy(this);
         }
         singleton = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     [TargetRpc]
     public void TargetDoTurn(NetworkConnection target) {
         Entity targetPlayer = target.identity.GetComponent<Entity>(); // Tentei usar o curEntity ao invés do targetPlayer, mas as vezes o curEntity não sincronizava a tempo
 
-        TileManager.singleton.InstantiateTile(targetPlayer.gridCoord, TileManager.MarkerEnum.EntityPos);
+        tileManager.InstantiateTile(targetPlayer.gridCoord, TileManager.MarkerEnum.EntityPos);
         // Calcula movimentos possíveis
         PlayerMovement playerMovement = targetPlayer.GetComponent<PlayerMovement>();
         playerMovement.GetAvailableMovements(targetPlayer.gridCoord);
@@ -32,7 +33,7 @@ public class NetworkSession : NetworkBehaviour
         for(int i = 0; i <= playerMovement.movements.endRow - playerMovement.movements.startRow; i++)
             for(int j = 0; j <= playerMovement.movements.endCol - playerMovement.movements.startCol; j++)
                 if(playerMovement.movements.visited[i,j]) 
-                    TileManager.singleton.InstantiateTile(new Vector2Int(i + playerMovement.movements.startRow,j + playerMovement.movements.startCol), TileManager.MarkerEnum.CanWalkYes);
+                    tileManager.InstantiateTile(new Vector2Int(i + playerMovement.movements.startRow,j + playerMovement.movements.startCol), TileManager.MarkerEnum.CanWalkYes);
     }
 
     // Movimenta o personagem
@@ -56,54 +57,49 @@ public class NetworkSession : NetworkBehaviour
 
     // Movimenta o personagem
     [Command(requiresAuthority = false)]
-    public void CmdUseSkill(Skill skill, Vector2Int pos){
-        ApplySkills(skill, pos);
+    public void CmdUseSkill(Vector2Int playerPos, Vector2Int skillPos, Skill skill){
+
+        MovementData movements = skill.GetSkillAttackPositions(playerPos, skillPos);
+        // Coloca marcador nas posições onde o personagem pode andar
+        for(int i = 0; i <= movements.endRow - movements.startRow; i++)
+            for(int j = 0; j <= movements.endCol - movements.startCol; j++)
+                if(movements.visited[i,j])
+                    skill.Apply(NetworkMap.singleton.GetMapContent(i, j));
+
         NextTurn();
     }
 
-    void ApplySkills(Skill skill, Vector2Int curPos) {
-        int availableMoves = skill.area;
-        // Calcula os limites da movimentação do personagem no mapa
-        int startRow = (Map.singleton.IsPositionInMap(curPos.x - availableMoves, curPos.y)) ? curPos.x - availableMoves : 0;
-        int endRow = (Map.singleton.IsPositionInMap(curPos.x + availableMoves, curPos.y)) ? curPos.x + availableMoves : Map.singleton.mapRows-1;
-        int startCol = (Map.singleton.IsPositionInMap(curPos.x, curPos.y - availableMoves)) ? curPos.y - availableMoves : 0;
-        int endCol = (Map.singleton.IsPositionInMap(curPos.x, curPos.y + availableMoves)) ? curPos.y + availableMoves : Map.singleton.mapCols-1;
-        // Dados para o BFS
-        Queue<(Vector2Int, int)> nodesToVisit = new Queue<(Vector2Int, int)>();
-        // Controle dos blocos disponíveis para caminhar
-        bool[,] visited = new bool[(endRow - startRow) + 1, (endCol - startCol) + 1];
-
-        // Insere a posição inicial nas listas
-        nodesToVisit.Enqueue((curPos, 0));
-        visited[curPos.x - startRow, curPos.y - startCol] = true;
-        skill.Apply(NetworkMap.singleton.GetMapContent(curPos.x, curPos.y));
-
-        // Executa BFS
-        while(nodesToVisit.Count > 0){
-            (Vector2Int, int) toProcess = nodesToVisit.Dequeue();
-
-
-            foreach(Vector2Int move in VoxelData.movements) {
-                Vector2Int neighbor = new Vector2Int(toProcess.Item1.x + move.x, toProcess.Item1.y + move.y);
-                if (Map.singleton.IsPositionInMap(neighbor.x, neighbor.y) && !visited[neighbor.x - startRow, neighbor.y - startCol] && toProcess.Item2 + 1 < availableMoves) {
-                    visited[neighbor.x - startRow, neighbor.y - startCol] = true;
-                    skill.Apply(NetworkMap.singleton.GetMapContent(neighbor.x, neighbor.y));
-                    nodesToVisit.Enqueue((neighbor, toProcess.Item2 + 1));
-                }
-            }
-        }
-    }
-
     void NextTurn() {
-        turnQueue.Remove(curEntity);
-        curEntity.turn++;
-        turn = curEntity.turn;
-        turnQueue.Add(curEntity);
+        if (curEntity != null) {
+            Debug.Log("Removendo " + curEntity + " da fila");
+            turnQueue.Remove(curEntity);
+            curEntity.turn++;
+            turn = curEntity.turn;
+            Debug.Log("Adicionando " + curEntity + " na fila");
+            turnQueue.Add(curEntity);
+        }
 
         foreach (Entity entity in turnQueue) {
             curEntity = entity;
             TargetDoTurn(curEntity.netIdentity.connectionToClient);
             break;
+        }
+    }
+
+    bool executeOnlyOnce = true;
+    void Update() {
+        if (isServer && executeOnlyOnce && tileManager != null && (CustomNetworkRoomManager.singleton as CustomNetworkRoomManager).hasSceneLoadedForAllClients) {
+            // TODO verificar porque isso é necessário. Do que notei, na hora que o CustomNEtworkRoomManager adiciona os players na turnQueue,
+            // os players ainda não possuem um netId. Por esse motivo, é possível que a estrutura do syncedet fique zoada. Ao retirar tudo do
+            // set e colocar novamente, volta a funcionar pois provavelmente a estrutura é montada corretamente
+            SyncSortedSet<Entity> aux = new SyncSortedSet<Entity>();
+            foreach (Entity entity in turnQueue) {
+                aux.Add(entity);
+            }
+            turnQueue = aux;
+
+            NextTurn();
+            executeOnlyOnce = false;
         }
     }
 }
