@@ -91,6 +91,7 @@ public class MapMaker : MonoBehaviour{
         // Recebe o tamanho da lista para instanciar os slots da toolbar
         if(voxelType == VoxelData.VoxelType.Block) hotbarSize = blockList.Count;
         else if(voxelType == VoxelData.VoxelType.Fluid) hotbarSize = fluidList.Count;
+        else if(voxelType == VoxelData.VoxelType.Prop) hotbarSize = PropData.singleton.propList.Count;
 
         // Inicializa toolbar de edição dos blocos
         for(int i = 0; i < hotbarSize; i++){
@@ -158,14 +159,21 @@ public class MapMaker : MonoBehaviour{
     }
 
     public static void UpdateVoxel(Vector2Int coord){
-        if(curTool == Tool.None) 
-            map.UpdateVoxel(coord, curVoxelType, curVoxelID);
-        else if(curTool == Tool.FillAll) 
-            map.UpdateAllVoxels(curVoxelType, curVoxelID);
-        else if(curTool == Tool.Bucket && (map.voxelMap[coord.x, coord.y].Item1 != curVoxelType || map.voxelMap[coord.x, coord.y].Item2 != curVoxelID)) 
-            map.FloodFill(coord, map.voxelMap[coord.x, coord.y].Item1, map.voxelMap[coord.x, coord.y].Item2, curVoxelType, curVoxelID);
-        else if(curTool == Tool.Erase) 
-            map.UpdateVoxel(coord, (int)VoxelData.VoxelType.None);
+        if(curVoxelType == (int)VoxelData.VoxelType.Block || curVoxelType == (int)VoxelData.VoxelType.Fluid){
+            if(curTool == Tool.None) 
+                map.UpdateVoxel(coord, curVoxelType, curVoxelID);
+            else if(curTool == Tool.FillAll) 
+                map.UpdateAllVoxels(curVoxelType, curVoxelID);
+            else if(curTool == Tool.Bucket && (map.voxelMap[coord.x, coord.y].Item1 != curVoxelType || map.voxelMap[coord.x, coord.y].Item2 != curVoxelID)) 
+                map.FloodFill(coord, map.voxelMap[coord.x, coord.y].Item1, map.voxelMap[coord.x, coord.y].Item2, curVoxelType, curVoxelID);
+            else if(curTool == Tool.Erase) 
+                map.UpdateVoxel(coord, (int)VoxelData.VoxelType.None);
+        }
+
+        else if(curVoxelType == (int)VoxelData.VoxelType.Prop){
+            if(curTool == Tool.Erase) PropMap.singleton.RemoveProp(coord);
+            else PropMap.singleton.AddProp(coord, curVoxelID); 
+        }
     }
     
     void SelectTool(Tool tool){
