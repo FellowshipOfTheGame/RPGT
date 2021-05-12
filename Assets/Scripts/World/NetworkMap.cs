@@ -34,7 +34,6 @@ public class NetworkMap : NetworkBehaviour
 
     [Command(requiresAuthority = false)]
     public void SetMapContent(int i, int j, BlockContent value) {
-        Debug.Log("Depois " + value);
         mapContent[(i * mapRows) + j] = value;
     }
 

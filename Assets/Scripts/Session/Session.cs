@@ -28,7 +28,7 @@ public class Session : MonoBehaviour{
     public Transform enemiesTransform;
     public TileManager tileManager;
 
-    void Start(){
+    void Awake(){
         if (singleton != null) {
             Destroy(this);
         }

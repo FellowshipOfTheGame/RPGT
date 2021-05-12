@@ -46,7 +46,7 @@ public class Entity : NetworkBehaviour, IComparable
 
     public override string ToString()
     {
-        return $"{{netId: {netId}, turn: {turn}, gridCoord: {gridCoord}}}";
+        return $"{{netId: {netId}, turn: {turn}, gridCoord: {gridCoord}, current.initiative: {current.initiative}}}";
     }
 }
 

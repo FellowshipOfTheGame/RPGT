@@ -298,6 +298,7 @@ MonoBehaviour:
   syncInterval: 0.1
   curEntity: {fileID: 0}
   turn: 0
+  tileManager: {fileID: 0}
   skillPanel: {fileID: 0}
 --- !u!1001 &1788570890
 PrefabInstance:
@@ -744,7 +745,7 @@ MonoBehaviour:
   spawnPrefabs: []
   showRoomGUI: 1
   minPlayers: 1
-  roomPlayerPrefab: {fileID: 7761495763072766608, guid: 631b5f878c424964585ed4e40e5ff624, type: 3}
+  roomPlayerPrefab: {fileID: 1668919047383147371, guid: 631b5f878c424964585ed4e40e5ff624, type: 3}
   RoomScene: Assets/Scenes/Room.unity
   GameplayScene: Assets/Scenes/Map.unity
   _allPlayersReady: 0

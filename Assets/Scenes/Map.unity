@@ -2003,9 +2003,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1848598539}
+  - component: {fileID: 1848598540}
   - component: {fileID: 1848598542}
   - component: {fileID: 1848598541}
-  - component: {fileID: 1848598540}
   - component: {fileID: 1848598543}
   m_Layer: 5
   m_Name: Skills
@@ -2013,7 +2013,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1848598539
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2042,7 +2042,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1848598538}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63b4371c931aa3f4ea91e375778148b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ddfe87c271f1804689e0183b441528a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   buttonPrefab: {fileID: 7236191907116840636, guid: 62b1e4bccf65672498f57768cb159ba5, type: 3}

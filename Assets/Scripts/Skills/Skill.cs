@@ -239,14 +239,12 @@ public class Fireball : Skill
         
         if (playerPos.x == attackPoint.x) {
             for (int i = -2; i < 3; i++) {
-                Debug.Log("x == x " + (attackPoint.x + i - startRow) + ", " + (attackPoint.y - startCol));
                 if (Map.singleton.IsPositionInMap(attackPoint.x + i - startRow, attackPoint.y - startCol))
                     visited[attackPoint.x + i - startRow, attackPoint.y - startCol] = true;
             }
         }
         else if (playerPos.y == attackPoint.y) {
             for (int i = -2; i < 3; i++) {
-                Debug.Log("yy == yy " + (attackPoint.x - startRow) + ", " + (attackPoint.y + i - startCol));
                 if (Map.singleton.IsPositionInMap(attackPoint.x - startRow, attackPoint.y + i - startCol))
                     visited[attackPoint.x - startRow, attackPoint.y + i - startCol] = true;
             }
