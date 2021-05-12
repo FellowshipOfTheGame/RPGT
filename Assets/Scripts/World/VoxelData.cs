@@ -5,6 +5,7 @@ using UnityEngine;
 public class VoxelData{
     public enum Direction {Back, Front, Top, Bottom, Left, Right};
     public enum MoveDirection {North, East, West, South};
+    public enum VoxelType {None, Block, Fluid, Prop};
     public static readonly int textureAtlasSizeInBlocks = 4;    
     public static float normalizedBlockTextureSize { get{return 1.0f/(float)textureAtlasSizeInBlocks;} }
 

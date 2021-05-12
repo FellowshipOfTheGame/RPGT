@@ -17,7 +17,7 @@ public class Session : MonoBehaviour{
     //public List<EntityData> enemyData = new List<EntityData>(); 
     // Conjunto de entidades da partida
     private Map map;
-    public MapMaker mapMaker;
+    //public MapMaker mapMaker;
     private BlockData blockData;
     private List<GameObject> players = new List<GameObject>();
     private List<GameObject> enemies = new List<GameObject>();
@@ -36,7 +36,7 @@ public class Session : MonoBehaviour{
 
         map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
         blockData = GameObject.FindGameObjectWithTag("DataHandler").GetComponent<BlockData>();
-        mapMaker.gameObject.SetActive(true);
+        // mapMaker.gameObject.SetActive(true);
         tileManager.gameObject.SetActive(true);
         // canWalk = new bool[map.mapRows, map.mapCols];
         // InstantiatePlayers();

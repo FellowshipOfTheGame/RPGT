@@ -5,11 +5,13 @@ using UnityEngine.UI;
 
 public class BlockData : MonoBehaviour{
     public List<BlockType> blockList = new List<BlockType>();
-
-    public enum BlockEnum {Air, Default, Ground, Stone, Sand, RedSand};
+    public List<FluidType> fluidList = new List<FluidType>();
+    public enum BlockEnum {Default, Ground, Stone, Sand, RedSand, SandStone, Snow};
+    public enum FluidEnum {Water, Lava};
 
     public void Start() {
         BlockContent.blockList = blockList;
+        BlockContent.fluidList = fluidList;
     }
 }
 
@@ -17,7 +19,6 @@ public class BlockData : MonoBehaviour{
 public class BlockType{
     public string blockName;
     public bool canWalk;
-    public bool isSolid;
     public Sprite icon;
     
     [Header("Texture Values")]
@@ -39,16 +40,24 @@ public class BlockType{
 }
 
 [System.Serializable]
+public class FluidType : BlockType {
+    public Material material;
+}
+
+[System.Serializable]
 public class BlockContent {
     public static List<BlockType> blockList = null;
+    public static List<FluidType> fluidList = null;
     public Entity entity = null;
     public Effect effect = null;
-    public int blockTypeIndex = -1;
+    public VoxelData.VoxelType voxelType = VoxelData.VoxelType.None;
+    public int voxelIndex = -1;
 
     public BlockContent() {}
-    public BlockContent(Entity entity, int blockTypeIndex) {
+    public BlockContent(Entity entity, VoxelData.VoxelType voxelType, int index) {
         this.entity = entity;
-        this.blockTypeIndex = blockTypeIndex;
+        this.voxelType = voxelType;
+        this.voxelIndex = index;
     }
 
     public BlockContent with(Entity entity) {
@@ -56,10 +65,14 @@ public class BlockContent {
         newOne.entity = entity;
         return newOne;
     }
-    public bool canWalk() { return entity == null && (blockTypeIndex != -1 || blockList[blockTypeIndex].canWalk); }
+    public bool canWalk() { 
+        if(entity != null) return false;
+        if(voxelType == VoxelData.VoxelType.Block) return blockList[voxelIndex].canWalk;
+        if(voxelType == VoxelData.VoxelType.Fluid) return fluidList[voxelIndex].canWalk;
+        return false;
+    }
 
-    public override string ToString()
-    {
+    public override string ToString() {
         return $"{{{entity}, {effect}}}";
     }
 }

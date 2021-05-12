@@ -10,13 +10,17 @@ public class MapMaker : MonoBehaviour{
     private int newSlotIndex;
     private int curSlotIndex;
     public static Tool curTool;
-    public static int curBlockID;
-    private readonly int hotbarSize = 6;
-
-    public GameObject[] hotbar;
+    public static int curVoxelID;
+    public static int curVoxelType;
+    private int hotbarSize;
+    private List<GameObject> hotbar;
+    public GameObject slotPrefab;
+    public Transform slotList;
     public GameObject[] toolButtons;
+    public List<GameObject> tabs;
 
     public static List<BlockType> blockList;
+    public static List<FluidType> fluidList;
 
     public static Map map;
     public GameObject blockEditPrefab;
@@ -31,31 +35,29 @@ public class MapMaker : MonoBehaviour{
     public Color selectedColor;
 
     private GameObject[,] blockInstances;
+    public static MapMaker singleton;
 
     void Awake(){
+        if(singleton != null){
+            Debug.LogWarning("Houve uma tentativa de criar 2 MapMakers");
+            Destroy(this);
+        }
+        singleton = this;
+
+        hotbar = new List<GameObject>();
+        blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;
+        fluidList = GameObject.Find("DataHandler").GetComponent<BlockData>().fluidList;
+        ChangeHotbarContent(VoxelData.VoxelType.Block);
+        
         // Inicializa ferramenta ativada
         curTool = Tool.None;
-        // Recebe conteúdo da posição inicial da hotbar
-        curSlotIndex = 0;
-        curBlockID = hotbar[0].GetComponent<MapMakerSlot>().blockID;
         // Referencia objetos necessários para o controle dos blocos do mapa
         map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
         highlightBlock = GameObject.Find("BlockHighlight");
-        highlightBlock.SetActive(false);
-        blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;
-        // Inicializa hotbar de edição dos blocos
-        for(int i = 0; i < hotbarSize; i++){
-            int pos = i;
-            int slotIndex = hotbar[i].GetComponent<MapMakerSlot>().index;
-            int blockID = hotbar[i].GetComponent<MapMakerSlot>().blockID;
-            hotbar[pos].GetComponentsInChildren<Image>()[0].enabled = true;
-            hotbar[pos].GetComponentsInChildren<Image>()[0].sprite = notSelected;
-            hotbar[pos].GetComponentsInChildren<Image>()[1].sprite = blockList[blockID].icon;
-            hotbar[pos].GetComponent<Button>().onClick.AddListener(() => UpdateIndex(slotIndex));
-        }
-        // Altera sprite da posição inicial da hotbar
-        hotbar[0].GetComponent<Image>().sprite = selected;
+        highlightBlock?.SetActive(false);
+
         lastCoord = new Vector2Int(-1,-1);
+
         // Adiciona listeners para os botões das ferramentas
         for(int i = 0; i < toolButtons.Length; i++){
             int pos = i;
@@ -65,6 +67,64 @@ public class MapMaker : MonoBehaviour{
         }
         // Instancia blocos para permitir edição do mapa
         InitBlockEditorMap();
+    }
+
+    public void ChangeHotbarContent(VoxelData.VoxelType voxelType){
+        // Atualiza cor dos ícones das abas
+        foreach(GameObject tab in tabs){
+            VoxelData.VoxelType tabContent = tab.GetComponent<Tab>().tabContent;
+            Text tabIcon = tab.GetComponentInChildren<Text>();
+            tabIcon.color = (tabContent != voxelType) ? new Color(1, 1, 1) : selectedColor;
+        }
+
+        // Limpa instancias anteriores
+        foreach(GameObject item in hotbar){
+            DestroyImmediate(item);
+        }
+
+        hotbar.Clear();
+        hotbarSize = 0;
+        curVoxelType = (int)voxelType;
+
+        // Recebe o tamanho da lista para instanciar os slots da toolbar
+        if(voxelType == VoxelData.VoxelType.Block) hotbarSize = blockList.Count;
+        else if(voxelType == VoxelData.VoxelType.Fluid) hotbarSize = fluidList.Count;
+        else if(voxelType == VoxelData.VoxelType.Prop) hotbarSize = PropData.singleton.propList.Count;
+
+        // Inicializa toolbar de edição dos blocos
+        for(int i = 0; i < hotbarSize; i++){
+            int pos = i;
+            // Instancia slot
+            hotbar.Add(Instantiate(slotPrefab));
+            hotbar[i].transform.SetParent(slotList);
+            hotbar[i].transform.localPosition = new Vector3(0f, 0f, 0f);
+            hotbar[i].name = "Slot " + i;
+            // Armazena índice do slot e ID do bloco
+            hotbar[i].GetComponent<MapMakerSlot>().index = pos;
+            hotbar[i].GetComponent<MapMakerSlot>().blockID = pos;
+            // Armazena valores novamente, desta vez para facilitar uso 
+            int slotIndex = hotbar[i].GetComponent<MapMakerSlot>().index;
+            int blockID = hotbar[i].GetComponent<MapMakerSlot>().blockID;
+            // Define sprite dos slots como não selecionado
+            hotbar[pos].GetComponentsInChildren<Image>()[0].enabled = true;
+            hotbar[pos].GetComponentsInChildren<Image>()[0].sprite = notSelected;
+            if(voxelType == VoxelData.VoxelType.Block)
+                hotbar[pos].GetComponentsInChildren<Image>()[1].sprite = blockList[blockID].icon;
+            else if(voxelType == VoxelData.VoxelType.Fluid)
+                hotbar[pos].GetComponentsInChildren<Image>()[1].sprite = fluidList[blockID].icon;
+            // Adiciona listener para modificar índice ativo
+            hotbar[pos].GetComponent<Button>().onClick.AddListener(() => UpdateIndex(slotIndex));
+        }
+
+        // Recebe conteúdo da posição inicial da hotbar
+        curSlotIndex = 0;
+        curVoxelID = hotbar[0].GetComponent<MapMakerSlot>().blockID;
+
+        // Altera sprite da posição inicial da hotbar
+        hotbar[0].GetComponent<Image>().sprite = selected;
+
+        // Ajusta posição da lista
+        slotList.transform.localPosition = new Vector3(50f, 0f, 0f);
     }
 
     void InitBlockEditorMap(){
@@ -79,32 +139,15 @@ public class MapMaker : MonoBehaviour{
         }
     }
 
-    private void Update(){
-        UpdatedIndexByScroll();
-    }
-
     public void UpdateIndex(int slotIndex){
         if(curSlotIndex != slotIndex){
-            curBlockID = hotbar[slotIndex].GetComponent<MapMakerSlot>().blockID;
+            curVoxelID = hotbar[slotIndex].GetComponent<MapMakerSlot>().blockID;
             hotbar[curSlotIndex].GetComponent<Image>().sprite = notSelected;
             hotbar[slotIndex].GetComponent<Image>().sprite = selected;
             curSlotIndex = slotIndex;
         }
     }
-
-    public void UpdatedIndexByScroll(){
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-        newSlotIndex = curSlotIndex;
-        if(scroll != 0){
-            if(scroll > 0) newSlotIndex++;
-            else newSlotIndex--;
-            if(newSlotIndex > hotbarSize - 1) newSlotIndex = 0;
-            if(newSlotIndex < 0) newSlotIndex = hotbarSize - 1;
-        }
-
-        UpdateIndex(newSlotIndex);
-    }
-
+    
     public static void PlaceHighlight(Vector2Int coord){
         if(coord != lastCoord){
             lastCoord = coord;
@@ -114,10 +157,21 @@ public class MapMaker : MonoBehaviour{
     }
 
     public static void UpdateVoxel(Vector2Int coord){
-        if(curTool == Tool.None) map.UpdateVoxel(coord, curBlockID);
-        else if(curTool == Tool.FillAll) map.UpdateAllVoxels(curBlockID);
-        else if(curTool == Tool.Bucket && map.voxelMap[coord.x, coord.y] != curBlockID) map.FloodFill(coord, map.voxelMap[coord.x, coord.y], curBlockID);
-        else if(curTool == Tool.Erase) map.UpdateVoxel(coord, (int)BlockData.BlockEnum.Air);
+        if(curVoxelType == (int)VoxelData.VoxelType.Block || curVoxelType == (int)VoxelData.VoxelType.Fluid){
+            if(curTool == Tool.None) 
+                map.UpdateVoxel(coord, curVoxelType, curVoxelID);
+            else if(curTool == Tool.FillAll) 
+                map.UpdateAllVoxels(curVoxelType, curVoxelID);
+            else if(curTool == Tool.Bucket && (map.voxelMap[coord.x, coord.y].Item1 != curVoxelType || map.voxelMap[coord.x, coord.y].Item2 != curVoxelID)) 
+                map.FloodFill(coord, map.voxelMap[coord.x, coord.y].Item1, map.voxelMap[coord.x, coord.y].Item2, curVoxelType, curVoxelID);
+            else if(curTool == Tool.Erase) 
+                map.UpdateVoxel(coord, (int)VoxelData.VoxelType.None);
+        }
+
+        else if(curVoxelType == (int)VoxelData.VoxelType.Prop){
+            if(curTool == Tool.Erase) PropMap.singleton.RemoveProp(coord);
+            else PropMap.singleton.AddProp(coord, curVoxelID); 
+        }
     }
     
     void SelectTool(Tool tool){

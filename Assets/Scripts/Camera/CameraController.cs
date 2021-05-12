@@ -1,6 +1,8 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour{
     public float normalSpeed;
@@ -39,7 +41,7 @@ public class CameraController : MonoBehaviour{
             if(plane.Raycast(ray, out entry)) dragStartPosition = ray.GetPoint(entry);   
         }
 
-        if(Input.GetMouseButton(0)){
+        if(Input.GetMouseButton(0) && !IsPointerOverUIElement() && (!MapMaker.highlightBlock || !MapMaker.highlightBlock.activeSelf)){
             Plane plane = new Plane(Vector3.up, Vector3.zero);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             
@@ -78,5 +80,13 @@ public class CameraController : MonoBehaviour{
 
         transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
+    }
+
+    bool IsPointerOverUIElement(){
+        var eventData = new PointerEventData(EventSystem.current);
+        eventData.position = Input.mousePosition;
+        var results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+        return results.Where(r => r.gameObject.layer == 5).Count() > 0;
     }
 }
