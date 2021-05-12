@@ -9,8 +9,8 @@ public class NetworkSession : NetworkBehaviour
     public Entity curEntity = null;
     public int turn = 0;
     public static NetworkSession singleton;
-    [SerializeField]
-    GameObject skillPanel;
+    public TileManager tileManager;
+    public GameObject skillPanel;
 
     public void Awake() {
         if (singleton != null) {
@@ -18,13 +18,14 @@ public class NetworkSession : NetworkBehaviour
             Destroy(this);
         }
         singleton = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     [TargetRpc]
     public void TargetDoTurn(NetworkConnection target) {
         Entity targetPlayer = target.identity.GetComponent<Entity>(); // Tentei usar o curEntity ao invés do targetPlayer, mas as vezes o curEntity não sincronizava a tempo
 
-        TileManager.singleton.InstantiateTile(targetPlayer.gridCoord, TileManager.MarkerEnum.EntityPos);
+        tileManager.InstantiateTile(targetPlayer.gridCoord, TileManager.MarkerEnum.EntityPos);
         // Calcula movimentos possíveis
         PlayerMovement playerMovement = targetPlayer.GetComponent<PlayerMovement>();
         playerMovement.GetAvailableMovements(targetPlayer.gridCoord);
@@ -32,7 +33,7 @@ public class NetworkSession : NetworkBehaviour
         for(int i = 0; i <= playerMovement.movements.endRow - playerMovement.movements.startRow; i++)
             for(int j = 0; j <= playerMovement.movements.endCol - playerMovement.movements.startCol; j++)
                 if(playerMovement.movements.visited[i,j]) 
-                    TileManager.singleton.InstantiateTile(new Vector2Int(i + playerMovement.movements.startRow,j + playerMovement.movements.startCol), TileManager.MarkerEnum.CanWalkYes);
+                    tileManager.InstantiateTile(new Vector2Int(i + playerMovement.movements.startRow,j + playerMovement.movements.startCol), TileManager.MarkerEnum.CanWalkYes);
     }
 
     // Movimenta o personagem
@@ -69,15 +70,36 @@ public class NetworkSession : NetworkBehaviour
     }
 
     void NextTurn() {
-        turnQueue.Remove(curEntity);
-        curEntity.turn++;
-        turn = curEntity.turn;
-        turnQueue.Add(curEntity);
+        if (curEntity != null) {
+            Debug.Log("Removendo " + curEntity + " da fila");
+            turnQueue.Remove(curEntity);
+            curEntity.turn++;
+            turn = curEntity.turn;
+            Debug.Log("Adicionando " + curEntity + " na fila");
+            turnQueue.Add(curEntity);
+        }
 
         foreach (Entity entity in turnQueue) {
             curEntity = entity;
             TargetDoTurn(curEntity.netIdentity.connectionToClient);
             break;
+        }
+    }
+
+    bool executeOnlyOnce = true;
+    void Update() {
+        if (isServer && executeOnlyOnce && tileManager != null && (CustomNetworkRoomManager.singleton as CustomNetworkRoomManager).hasSceneLoadedForAllClients) {
+            // TODO verificar porque isso é necessário. Do que notei, na hora que o CustomNEtworkRoomManager adiciona os players na turnQueue,
+            // os players ainda não possuem um netId. Por esse motivo, é possível que a estrutura do syncedet fique zoada. Ao retirar tudo do
+            // set e colocar novamente, volta a funcionar pois provavelmente a estrutura é montada corretamente
+            SyncSortedSet<Entity> aux = new SyncSortedSet<Entity>();
+            foreach (Entity entity in turnQueue) {
+                aux.Add(entity);
+            }
+            turnQueue = aux;
+
+            NextTurn();
+            executeOnlyOnce = false;
         }
     }
 }

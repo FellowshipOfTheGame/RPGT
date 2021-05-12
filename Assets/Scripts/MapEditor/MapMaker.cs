@@ -32,7 +32,7 @@ public class MapMaker : MonoBehaviour{
 
     private GameObject[,] blockInstances;
 
-    void Start(){
+    void Awake(){
         // Inicializa ferramenta ativada
         curTool = Tool.None;
         // Recebe conteúdo da posição inicial da hotbar

@@ -7,50 +7,49 @@ using UnityEngine;
 	API Reference: https://mirror-networking.com/docs/api/Mirror.NetworkManager.html
 */
 
-public class CustomNetworkRoomManager : NetworkManager
+public class CustomNetworkRoomManager : NetworkRoomManager
 {
-	public NetworkMap networkMap;						// NetworkMap Singleton isn't ready fast enough for OnStartServer, so we need to link it directly
-        
-	/// <summary>
-    /// This is invoked when a server is started - including when a host is started.
-    /// <para>StartServer has multiple signatures, but they all cause this hook to be called.</para>
-    /// </summary>
-    public override void OnStartServer() {
-        // Instancia o mapa geral que é sincronizado entre todos os players
-		List<BlockContent> tmpMapContent = new List<BlockContent>();
-        for (int i = 0; i < networkMap.mapRows * networkMap.mapCols; i++)
-            tmpMapContent.Add(new BlockContent(null, (int) BlockData.BlockEnum.Ground));
-
-        networkMap.mapContent.AddRange(tmpMapContent);
-	}
+	public NetworkMap networkMap;
+	public NetworkSession networkSession;
+    private int sceneLoadedForClients = 0;
+    public bool hasSceneLoadedForAllClients { get { return roomSlots.Count != 0 ? sceneLoadedForClients == roomSlots.Count : false; } }
 
     /// <summary>
-    /// Called on the server when a client adds a new player with ClientScene.AddPlayer.
-    /// <para>The default implementation for this function creates a new player object from the playerPrefab.</para>
+    /// This allows customization of the creation of the GamePlayer object on the server.
+    /// <para>By default the gamePlayerPrefab is used to create the game-player, but this function allows that behaviour to be customized. The object returned from the function will be used to replace the room-player on the connection.</para>
     /// </summary>
-    /// <param name="conn">Connection from client.</param>
-    public override void OnServerAddPlayer(NetworkConnection conn)
+    /// <param name="conn">The connection the player object is for.</param>
+    /// <param name="roomPlayer">The room player object for this connection.</param>
+    /// <returns>A new GamePlayer object.</returns>
+    public override GameObject OnRoomServerCreateGamePlayer(NetworkConnection conn, GameObject roomPlayer)
     {
-        base.OnServerAddPlayer(conn);
         // Spawns the player, fills its position on the mapContent and translates him to such position
-        Entity player = conn.identity.GetComponent<Entity>();
+        GameObject gameObjPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        Entity player = gameObjPlayer.GetComponent<Entity>();
         Vector2Int spawnPos = networkMap.GetEmptyPosition();
-        networkMap.SetMapContent(spawnPos.x, spawnPos.y, networkMap.GetMapContent(spawnPos.x, spawnPos.y).with(player));
+        networkMap.mapContent[(spawnPos.x * networkMap.mapRows) + spawnPos.y] = networkMap.GetMapContent(spawnPos.x, spawnPos.y).with(player);
 
         player.gridCoord = spawnPos;
-        player.turn = NetworkSession.singleton.turn;
+        player.turn = networkSession.turn;
 
-        if (NetworkSession.singleton.curEntity == null) {
-            NetworkSession.singleton.turnQueue.Add(player);
-            NetworkSession.singleton.curEntity = player;
-            
-            // Sempre vai ser a vez do primeiro player que entrar, por isso já mandamos ele realizar o turno dele
-            NetworkSession.singleton.TargetDoTurn(conn);
-        }
-        else {
-            NetworkSession.singleton.turnQueue.Add(player);
-            // TODO Sempre que um novo player entrar, o curEntity precisa re-calcular as posições andáveis para o caso de o novo player spawnar próximo do curEntity
-            NetworkSession.singleton.TargetDoTurn(NetworkSession.singleton.curEntity.netIdentity.connectionToClient);
-        }
+        Debug.Log("Adicionando " + player + " na fila");
+        networkSession.turnQueue.Add(player);
+
+        return gameObjPlayer;
+    }
+
+    /// <summary>
+    /// This is called on the server when it is told that a client has finished switching from the room scene to a game player scene.
+    /// <para>When switching from the room, the room-player is replaced with a game-player object. This callback function gives an opportunity to apply state from the room-player to the game-player object.</para>
+    /// </summary>
+    /// <param name="conn">The connection of the player</param>
+    /// <param name="roomPlayer">The room player object.</param>
+    /// <param name="gamePlayer">The game player object.</param>
+    /// <returns>False to not allow this player to replace the room player.</returns>
+    public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnection conn, GameObject roomPlayer, GameObject gamePlayer)
+    {
+        sceneLoadedForClients++;
+        
+        return true;
     }
 }

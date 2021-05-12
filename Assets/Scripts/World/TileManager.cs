@@ -27,6 +27,11 @@ public class TileManager : MonoBehaviour{
         blockData = GameObject.FindGameObjectWithTag("DataHandler").GetComponent<BlockData>();
         map = GameObject.FindGameObjectWithTag("GameHandler").GetComponent<Map>();
 
+        InstantiateTilesLayers();
+        NetworkSession.singleton.tileManager = this;
+    }
+
+    void InstantiateTilesLayers() {
         GameObject newObj = new GameObject("pathLayer");
         newObj.transform.SetParent(transform);
         pathLayer = newObj.transform;
@@ -36,7 +41,6 @@ public class TileManager : MonoBehaviour{
             newObj.transform.SetParent(transform);
             tileLayers.Add(newObj.transform);
         }
-
     }
 
     // Instancia marcador no cenário

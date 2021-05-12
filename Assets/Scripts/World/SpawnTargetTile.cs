@@ -16,8 +16,8 @@ public class SpawnTargetTile : MonoBehaviour{
     }
 
     private void OnMouseOver(){
-        targetTile.SetActive(true);
-        if (tileManager.pathLayer.childCount == 0) 
+        targetTile?.SetActive(true); // TODO verificar por que não funciona sem ?. ao usar uma habilidade
+        if (tileManager?.pathLayer.childCount == 0) 
             Player.localPlayer.GetComponent<PlayerMovement>().DrawPath(coord);
     }
 
