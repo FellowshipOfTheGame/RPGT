@@ -1,0 +1,149 @@
+Using pre-set license
+Built from '2020.3/staging' branch; Version is '2020.3.0f1 (c7b5465681fb) revision 13088070'; Using compiler version '192528614'; Build Type 'Release'
+OS: 'Windows 10 Education; OS build 19042.631; Version 2009; 64bit' Language: 'pt' Physical Memory: 6046 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+
+ COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\2020.3.0f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+D:/TRPG/RPGT/RPGT
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+62894
+Successfully changed project path to: D:/TRPG/RPGT/RPGT
+D:/TRPG/RPGT/RPGT
+Using Asset Import Pipeline V2.
+Refreshing native plugins compatible for Editor in 57.95 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2020.3.0f1 (c7b5465681fb)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/2020.3.0f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path D:/TRPG/RPGT/RPGT/Assets
+GfxDevice: creating device client; threaded=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce 930M (ID=0x1346)
+    Vendor:   
+    VRAM:     2020 MB
+    Driver:   23.21.13.8857
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/2020.3.0f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/2020.3.0f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
+Mono config path = 'C:/Program Files/Unity/2020.3.0f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56808
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/2020.3.0f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.002856 seconds.
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 66.66 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  2.016 seconds
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.001411 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.49 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  3.065 seconds
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.07 seconds
+Refreshing native plugins compatible for Editor in 0.93 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1840 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 86.8 MB.
+System memory in use after: 86.9 MB.
+
+Unloading 17 unused Assets to reduce memory usage. Loaded Objects now: 2284.
+Total: 2.890400 ms (FindLiveObjects: 0.342400 ms CreateObjectMapping: 0.093600 ms MarkObjects: 2.346500 ms  DeleteObjects: 0.106000 ms)
+
+========================================================================
+Received Import Request.
+  path: Assets/Prefabs/Player.prefab
+  artifactKey: Guid(fe66cac74621c2d42a1f772a83004f89) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Player.prefab using Guid(fe66cac74621c2d42a1f772a83004f89) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '98d6cc49becd970e4918b34e2e2b0b11') in 0.362400 seconds
+  Import took 0.377952 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.005820 seconds.
+  path: Assets/Prefabs/Characterbase.prefab
+  artifactKey: Guid(20cb8fd220f14774ea93dfb8e2271595) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Characterbase.prefab using Guid(20cb8fd220f14774ea93dfb8e2271595) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f7daba191871e28be4220faaf222d7e5') in 0.117001 seconds
+  Import took 0.126360 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000304 seconds.
+  path: Assets/Prefabs/Characterbase Variant 1.prefab
+  artifactKey: Guid(d2ea5fab9d4244b44997fcccdc36a428) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Characterbase Variant 1.prefab using Guid(d2ea5fab9d4244b44997fcccdc36a428) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5d9670d41262b2990bc4e6f455288b90') in 0.098112 seconds
+  Import took 0.111513 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000277 seconds.
+  path: Assets/Prefabs/Enemy.prefab
+  artifactKey: Guid(e5c932b0bb25bc8489ddda8f4a68f777) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Enemy.prefab using Guid(e5c932b0bb25bc8489ddda8f4a68f777) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2d8fddd632fa2a84934080b5be7af826') in 0.101214 seconds
+  Import took 0.108794 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000528 seconds.
+  path: Assets/Prefabs/Characterbase Variant.prefab
+  artifactKey: Guid(720bb02af7ea07346b10a9c402285043) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Characterbase Variant.prefab using Guid(720bb02af7ea07346b10a9c402285043) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '428fa0a41b96dd999fb37d8171d7f0f4') in 0.108166 seconds
+  Import took 0.117283 seconds .
+
+========================================================================
+Received Prepare
+Refreshing native plugins compatible for Editor in 27.37 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 7 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 54.8 MB.
+System memory in use after: 54.8 MB.
+
+Unloading 7 unused Assets to reduce memory usage. Loaded Objects now: 2291.
+Total: 16.115700 ms (FindLiveObjects: 9.336300 ms CreateObjectMapping: 0.293100 ms MarkObjects: 6.337300 ms  DeleteObjects: 0.143800 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.002314 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.46 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.363 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.62 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1830 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 89.6 MB.
+System memory in use after: 89.7 MB.
+
+Unloading 9 unused Assets to reduce memory usage. Loaded Objects now: 2295.
+Total: 5.754300 ms (FindLiveObjects: 0.350400 ms CreateObjectMapping: 0.122800 ms MarkObjects: 5.200600 ms  DeleteObjects: 0.078000 ms)
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
