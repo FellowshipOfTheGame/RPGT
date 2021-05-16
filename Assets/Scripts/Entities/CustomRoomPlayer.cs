@@ -10,6 +10,11 @@ public class CustomRoomPlayer : NetworkRoomPlayer
     public static CustomRoomPlayer localPlayerRoom = null;
 
     ImageMessage img = new ImageMessage();
+    Texture2D texture;
+
+    void Awake() {
+        texture = new Texture2D(0, 0);
+    }
 
     /// <summary>
     /// Called when the local player object has been set up.
@@ -29,7 +34,8 @@ public class CustomRoomPlayer : NetworkRoomPlayer
         string path = EditorUtility.OpenFilePanel("Carregar imagem", "", "png");
         if (path.Length != 0)
         {
-            img.img = File.ReadAllBytes(path);
+            img.bytes = File.ReadAllBytes(path);
+            texture.LoadImage(img.bytes);
             NetworkServer.SendToAll<ImageMessage>(img);
         }
     }
@@ -37,6 +43,7 @@ public class CustomRoomPlayer : NetworkRoomPlayer
     void ReceiveImg(ImageMessage msg) {
         if (this.netId == msg.netId) {
             img = msg;
+            texture.LoadImage(img.bytes);
         }
     }
 
@@ -54,14 +61,24 @@ public class CustomRoomPlayer : NetworkRoomPlayer
             if (!NetworkManager.IsSceneActive(room.RoomScene))
                 return;
 
+            DrawPlayerImage();
             DrawPlayerUploadImgState();
             DrawPlayerUploadImg();
         }
     }
 
+    void DrawPlayerImage()
+    {
+        if (!img.hasLoaded)
+            return;
+
+        GUILayout.BeginArea(new Rect(Screen.width / 2 - 390f + (index * 100), 460f, 90f, 90f), texture);
+        GUILayout.EndArea();
+    }
+
     void DrawPlayerUploadImgState()
     {
-        GUILayout.BeginArea(new Rect(Screen.width / 2 - 390f + (index * 100), 460f, 90f, 130f));
+        GUILayout.BeginArea(new Rect(Screen.width / 2 - 390f + (index * 100), 460f + 90f, 90f, 130f));
 
         GUILayout.Label($"Player [{index + 1}]");
 
@@ -86,7 +103,7 @@ public class CustomRoomPlayer : NetworkRoomPlayer
     {
         if (NetworkClient.active && isLocalPlayer)
         {
-            GUILayout.BeginArea(new Rect(Screen.width / 2 - 390f, 570f, 120f, 50f));
+            GUILayout.BeginArea(new Rect(Screen.width / 2 - 390f, 570f + 90f, 120f, 50f));
 
             if (GUILayout.Button("Upload img")) {
                 SelectImg();
@@ -110,6 +127,6 @@ public class CustomRoomPlayer : NetworkRoomPlayer
 public struct ImageMessage : NetworkMessage
 {
     public uint netId;
-    public byte[] img;
-    public bool hasLoaded { get { return img != null && img.Length != 0; } }
+    public byte[] bytes;
+    public bool hasLoaded { get { return bytes != null && bytes.Length != 0; } }
 }

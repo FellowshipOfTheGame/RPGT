@@ -67,7 +67,7 @@ public class CustomNetworkRoomManager : NetworkRoomManager
         }
 
         if (IsSceneActive(RoomScene)) {
-            GUI.Box(new Rect(Screen.width / 2 - 400f, 450f, 520f, 200), "PLAYERS");
+            GUI.Box(new Rect(Screen.width / 2 - 400f, 450f, 520f, 400), "PLAYERS");
         }
     }
 }
