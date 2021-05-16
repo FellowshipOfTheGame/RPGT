@@ -2,10 +2,10 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CustomPlayerRoom : NetworkRoomPlayer
+public class CustomRoomPlayer : NetworkRoomPlayer
 {
     public List<Skill> skills = new List<Skill> { new BasicAttack(), new BasicHeal(), new Fireball() };
-    public static CustomPlayerRoom localPlayerRoom = null;
+    public static CustomRoomPlayer localPlayerRoom = null;
 
     /// <summary>
     /// Called when the local player object has been set up.

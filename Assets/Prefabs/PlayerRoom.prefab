@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2809015577447223536}
   - component: {fileID: 7089103827410894968}
-  - component: {fileID: 1668919047383147371}
+  - component: {fileID: 9036364293609372237}
   m_Layer: 0
   m_Name: PlayerRoom
   m_TagString: Untagged
@@ -49,7 +49,7 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!114 &1668919047383147371
+--- !u!114 &9036364293609372237
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

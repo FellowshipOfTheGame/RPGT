@@ -16,7 +16,7 @@ public class SkillPanel : MonoBehaviour
     }
 
     void SpawnSkillButtons() {
-        skills = CustomPlayerRoom.localPlayerRoom.skills;
+        skills = CustomRoomPlayer.localPlayerRoom.skills;
 
         foreach (Skill skill in skills) {
             GameObject newButton = Instantiate(buttonPrefab) as GameObject;
