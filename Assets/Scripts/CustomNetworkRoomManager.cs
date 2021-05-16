@@ -52,4 +52,22 @@ public class CustomNetworkRoomManager : NetworkRoomManager
         
         return true;
     }
+
+    public override void OnGUI()
+    {
+        if (!showRoomGUI)
+            return;
+
+        if (NetworkServer.active && IsSceneActive(GameplayScene))
+        {
+            GUILayout.BeginArea(new Rect(Screen.width - 150f, 10f, 140f, 30f));
+            if (GUILayout.Button("Return to Room"))
+                ServerChangeScene(RoomScene);
+            GUILayout.EndArea();
+        }
+
+        if (IsSceneActive(RoomScene)) {
+            GUI.Box(new Rect(Screen.width / 2 - 400f, 450f, 520f, 200), "PLAYERS");
+        }
+    }
 }
