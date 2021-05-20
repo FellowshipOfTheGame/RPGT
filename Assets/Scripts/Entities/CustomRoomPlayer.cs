@@ -1,18 +1,22 @@
 using Mirror;
 using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
+using SimpleFileBrowser;
 
 public class CustomRoomPlayer : NetworkRoomPlayer
 {
     public List<Skill> skills = new List<Skill> { new BasicAttack(), new BasicHeal(), new Fireball() };
     public static CustomRoomPlayer localPlayerRoom = null;
 
-    ImageMessage img = new ImageMessage();
-    Texture2D texture;
+    CustomNetworkRoomManager customNetworkRoomManager;
+
+    public ImageMessage img = new ImageMessage();
+    public Texture2D texture;
 
     void Awake() {
+        customNetworkRoomManager = NetworkManager.singleton as CustomNetworkRoomManager;
         texture = new Texture2D(0, 0);
     }
 
@@ -27,24 +31,6 @@ public class CustomRoomPlayer : NetworkRoomPlayer
         }
         localPlayerRoom = this;
         img.netId = this.netId;
-        NetworkClient.RegisterHandler<ImageMessage>(ReceiveImg);
-    }
-
-    void SelectImg() {
-        string path = EditorUtility.OpenFilePanel("Carregar imagem", "", "png");
-        if (path.Length != 0)
-        {
-            img.bytes = File.ReadAllBytes(path);
-            texture.LoadImage(img.bytes);
-            NetworkServer.SendToAll<ImageMessage>(img);
-        }
-    }
-
-    void ReceiveImg(ImageMessage msg) {
-        if (this.netId == msg.netId) {
-            img = msg;
-            texture.LoadImage(img.bytes);
-        }
     }
 
     public override void OnGUI()
@@ -106,7 +92,7 @@ public class CustomRoomPlayer : NetworkRoomPlayer
             GUILayout.BeginArea(new Rect(Screen.width / 2 - 390f, 570f + 90f, 120f, 50f));
 
             if (GUILayout.Button("Upload img")) {
-                SelectImg();
+                StartCoroutine( customNetworkRoomManager.SelectImageCoroutine(img, texture) );
             }
             if (readyToBegin)
             {
@@ -122,11 +108,4 @@ public class CustomRoomPlayer : NetworkRoomPlayer
             GUILayout.EndArea();
         }
     }
-}
-
-public struct ImageMessage : NetworkMessage
-{
-    public uint netId;
-    public byte[] bytes;
-    public bool hasLoaded { get { return bytes != null && bytes.Length != 0; } }
 }

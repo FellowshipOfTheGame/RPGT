@@ -1,6 +1,9 @@
 using Mirror;
+using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SimpleFileBrowser;
 
 /*
 	Documentation: https://mirror-networking.com/docs/Components/NetworkManager.html
@@ -51,6 +54,42 @@ public class CustomNetworkRoomManager : NetworkRoomManager
         sceneLoadedForClients++;
         
         return true;
+    }
+
+    /// <summary>
+    /// This is called on the server when the server is started - including when a host is started.
+    /// </summary>
+    public override void OnRoomStartServer() {
+        NetworkServer.RegisterHandler<ImageMessage>(ReceiveImgServer);
+    }
+
+    /// <summary>
+    /// This is called on the client when a client is started.
+    /// </summary>
+    /// <param name="roomClient">The connection for the room.</param>
+    public override void OnRoomStartClient() {
+        NetworkClient.RegisterHandler<ImageMessage>(ReceiveImgClient);
+    }
+
+    void ReceiveImgServer(NetworkConnection conn, ImageMessage msg) {
+        NetworkServer.SendToAll<ImageMessage>(msg);
+    }
+
+    void ReceiveImgClient(ImageMessage msg) {
+        CustomRoomPlayer target = roomSlots.Find(roomPlayer => roomPlayer.netId == msg.netId) as CustomRoomPlayer;
+        target.img = msg;
+        target.texture.LoadImage(msg.bytes);
+    }
+
+    public IEnumerator SelectImageCoroutine(ImageMessage img, Texture2D texture) {
+		yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.Files, false, null, null, "Carregar imagem", "Selecionar");
+
+		if( FileBrowser.Success )
+		{
+			img.bytes = FileBrowserHelpers.ReadBytesFromFile( FileBrowser.Result[0] );
+            texture.LoadImage(img.bytes);
+            NetworkClient.Send<ImageMessage>(img); // The client sends a message to ReceiveImgServer in the server in order for the server to broadcast
+		}
     }
 
     public override void OnGUI()
