@@ -10,8 +10,8 @@ public class MapMaker : MonoBehaviour{
     private int newSlotIndex;
     private int curSlotIndex;
     public static Tool curTool;
-    public static int curVoxelID;
-    public static int curVoxelType;
+    public static byte curVoxelID;
+    public static byte curVoxelType;
     private int hotbarSize;
     private List<GameObject> hotbar;
     public GameObject slotPrefab;
@@ -84,7 +84,7 @@ public class MapMaker : MonoBehaviour{
 
         hotbar.Clear();
         hotbarSize = 0;
-        curVoxelType = (int)voxelType;
+        curVoxelType = (byte)voxelType;
 
         // Recebe o tamanho da lista para instanciar os slots da toolbar
         if(voxelType == VoxelData.VoxelType.Block) hotbarSize = blockList.Count;
@@ -118,7 +118,7 @@ public class MapMaker : MonoBehaviour{
 
         // Recebe conteúdo da posição inicial da hotbar
         curSlotIndex = 0;
-        curVoxelID = hotbar[0].GetComponent<MapMakerSlot>().blockID;
+        curVoxelID = (byte)hotbar[0].GetComponent<MapMakerSlot>().blockID;
 
         // Altera sprite da posição inicial da hotbar
         hotbar[0].GetComponent<Image>().sprite = selected;
@@ -141,7 +141,7 @@ public class MapMaker : MonoBehaviour{
 
     public void UpdateIndex(int slotIndex){
         if(curSlotIndex != slotIndex){
-            curVoxelID = hotbar[slotIndex].GetComponent<MapMakerSlot>().blockID;
+            curVoxelID = (byte)hotbar[slotIndex].GetComponent<MapMakerSlot>().blockID;
             hotbar[curSlotIndex].GetComponent<Image>().sprite = notSelected;
             hotbar[slotIndex].GetComponent<Image>().sprite = selected;
             curSlotIndex = slotIndex;

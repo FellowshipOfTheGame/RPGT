@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using System;
 
 public class Map : MonoBehaviour{
     // Variáveis para gerenciamento das informações gerais do mapa
@@ -8,7 +10,7 @@ public class Map : MonoBehaviour{
     public int mapCols;
     public float centerOffset;
     public bool isMapPopulated = false; 
-    public (int, int)[,] voxelMap;
+    public (byte, byte)[,] voxelMap;
     private List<BlockType> blockList;
     private List<FluidType> fluidList;
     // Variáveis para geração dos blocos do mapa
@@ -36,13 +38,12 @@ public class Map : MonoBehaviour{
     public static Map singleton;
 
     void Awake() {
-        if (singleton != null) {
+        if(singleton != null) {
             Debug.LogWarning("Houve uma tentativa de criar 2 Maps");
             Destroy(this);
         }
 
         singleton = this;
-        voxelMap = new (int, int)[mapRows, mapCols];
         blockList = GameObject.Find("DataHandler").GetComponent<BlockData>().blockList;
         fluidList = GameObject.Find("DataHandler").GetComponent<BlockData>().fluidList;
         // Instancia as listas para controle da renderização dos fluidos
@@ -102,14 +103,36 @@ public class Map : MonoBehaviour{
         }
     }
 
-    // Atribui blocos para o mapa
-    void PopulateMap(){
-        for(int i = 0; i < mapRows; i++){
-            for(int j = 0; j < mapCols; j++){
-                voxelMap[i, j] = ((int)VoxelData.VoxelType.Block, (int)BlockData.BlockEnum.Default);
-                UpdateMeshData(new Vector2Int(i, j));
+    void ReadFile(){
+        string filePath = MapList.singleton.curFilePath;
+        // verifica se o arquivo existe 
+        if(File.Exists(filePath)){
+            byte voxelType;
+            byte voxelID;
+            // lê o trecho do arquivo que contém as dimensões do mapa e a posição dos voxels
+            using(BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open))){
+                mapRows = reader.ReadInt32();
+                mapCols = reader.ReadInt32();
+                voxelMap = new (byte, byte)[mapRows, mapCols];
+                for(int i = 0; i < mapRows; i++){
+                    for(int j = 0; j < mapCols; j++){
+                        voxelType = reader.ReadByte();
+                        voxelID = reader.ReadByte();
+                        voxelMap[i, j] = (voxelType, voxelID);
+                    }
+                }
             }
         }
+
+        else throw new Exception("Arquivo de save do mapa não foi encontrado.");
+    }
+
+    // Atribui blocos para o mapa
+    void PopulateMap(){
+        ReadFile();
+        for(int i = 0; i < mapRows; i++)
+            for(int j = 0; j < mapCols; j++)
+                UpdateMeshData(new Vector2Int(i, j));
         isMapPopulated = true;
         CreateBlockMesh();
     }
@@ -149,8 +172,8 @@ public class Map : MonoBehaviour{
                 for(int j = 0; j < 4; j++)
                     vertices.Add(pos3 + VoxelData.voxelVertices[VoxelData.voxelTriangles[i, j]]);
 
-                if(voxelType == (int)VoxelData.VoxelType.Block) AddTexture(blockList[voxelID].getTextureID((VoxelData.Direction)i));
-                else if(voxelType == (int)VoxelData.VoxelType.Fluid) AddTexture(fluidList[voxelID].getTextureID((VoxelData.Direction)i));
+                if(voxelType == (byte)VoxelData.VoxelType.Block) AddTexture(blockList[voxelID].getTextureID((VoxelData.Direction)i));
+                else if(voxelType == (byte)VoxelData.VoxelType.Fluid) AddTexture(fluidList[voxelID].getTextureID((VoxelData.Direction)i));
 
                 triangles.Add(vertexIndex);
                 triangles.Add(vertexIndex + 1);
@@ -164,11 +187,11 @@ public class Map : MonoBehaviour{
         }
 
         // Caso seja um fluído, cria a malha da parte superior
-        if(voxelType == (int)VoxelData.VoxelType.Fluid){
+        if(voxelType == (byte)VoxelData.VoxelType.Fluid){
             float vertice_x;
             float vertice_y;
             for(int i = 0; i < 4; i++){
-                fluidVertices[voxelID].Add(pos3 + VoxelData.voxelVertices[VoxelData.voxelTriangles[(int)VoxelData.Direction.Top, i]]);
+                fluidVertices[voxelID].Add(pos3 + VoxelData.voxelVertices[VoxelData.voxelTriangles[(byte)VoxelData.Direction.Top, i]]);
                 vertice_x = fluidVertices[voxelID][fluidVertices[voxelID].Count - 1].x;
                 vertice_y = fluidVertices[voxelID][fluidVertices[voxelID].Count - 1].z;
                 fluidUvs[voxelID].Add(new Vector2(vertice_x, vertice_y));
@@ -207,12 +230,12 @@ public class Map : MonoBehaviour{
         int y = Mathf.FloorToInt(pos.y);
         int z = Mathf.FloorToInt(pos.z);
 
-        if(IsPositionInMap(face_x, face_z) && voxelMap[face_x,face_z].Item1 == (int)VoxelData.VoxelType.Fluid && face_y == 1) 
+        if(IsPositionInMap(face_x, face_z) && voxelMap[face_x,face_z].Item1 == (byte)VoxelData.VoxelType.Fluid && face_y == 1) 
             return false;
-        if(voxelMap[x, z].Item1 == (int)VoxelData.VoxelType.Block)
-            return IsFaceInMapBorder(face_x, face_y, face_z) || (IsPositionInMap(face_x,face_z) && voxelMap[face_x,face_z].Item1 != (int)VoxelData.VoxelType.Block); 
-        if(voxelMap[x, z].Item1 == (int)VoxelData.VoxelType.Fluid)
-            return IsFaceInMapBorder(face_x, face_y, face_z) || (IsPositionInMap(face_x,face_z) && voxelMap[face_x,face_z].Item1 == (int)VoxelData.VoxelType.None);
+        if(voxelMap[x, z].Item1 == (byte)VoxelData.VoxelType.Block)
+            return IsFaceInMapBorder(face_x, face_y, face_z) || (IsPositionInMap(face_x,face_z) && voxelMap[face_x,face_z].Item1 != (byte)VoxelData.VoxelType.Block); 
+        if(voxelMap[x, z].Item1 == (byte)VoxelData.VoxelType.Fluid)
+            return IsFaceInMapBorder(face_x, face_y, face_z) || (IsPositionInMap(face_x,face_z) && voxelMap[face_x,face_z].Item1 == (byte)VoxelData.VoxelType.None);
         return false;
     }
 
@@ -249,25 +272,25 @@ public class Map : MonoBehaviour{
         return true;
     }
 
-    public void UpdateVoxel(Vector2Int coord, int voxelType, int newBlockID = 0){
+    public void UpdateVoxel(Vector2Int coord, byte voxelType, byte newBlockID = 0){
         voxelMap[coord.x, coord.y].Item1 = voxelType;
         voxelMap[coord.x, coord.y].Item2 = newBlockID;
         ClearBlockMeshData();
         ClearFluidMeshData();
         for(int i = 0; i < mapRows; i++)
             for(int j = 0; j < mapCols; j++)
-                if(voxelMap[i,j].Item1 != (int)VoxelData.VoxelType.None)
+                if(voxelMap[i,j].Item1 != (byte)VoxelData.VoxelType.None)
                     UpdateMeshData(new Vector2Int(i,j));
         CreateBlockMesh();
         CreateFluidMesh();
     }
 
-    public void UpdateAllVoxels(int voxelType, int voxelID){
+    public void UpdateAllVoxels(byte voxelType, byte voxelID){
         ClearBlockMeshData();
         ClearFluidMeshData();
         for(int i = 0; i < mapRows; i++){
             for(int j = 0; j < mapCols; j++){
-                if(voxelMap[i,j].Item1 != (int)VoxelData.VoxelType.None){
+                if(voxelMap[i,j].Item1 != (byte)VoxelData.VoxelType.None){
                     voxelMap[i, j].Item1 = voxelType;
                     voxelMap[i, j].Item2 = voxelID;
                     UpdateMeshData(new Vector2Int(i,j));
@@ -278,7 +301,7 @@ public class Map : MonoBehaviour{
         CreateFluidMesh(); 
     }
 
-    public void FloodFill(Vector2Int coord, int targetVoxelType, int targetVoxel, int newVoxelType, int newVoxel){
+    public void FloodFill(Vector2Int coord, byte targetVoxelType, byte targetVoxel, byte newVoxelType, byte newVoxel){
         UpdateVoxel(coord, newVoxelType, newVoxel);
         Vector2Int neighbor;
         for(int i = 0; i < VoxelData.movements.Length; i++){
