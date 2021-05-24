@@ -23,7 +23,7 @@ public class MapSave : MonoBehaviour{
 
     public void CreateFile(string name, int mapRows, int mapCols){
         data.Init(name, mapRows, mapCols);
-        filePath = Application.dataPath + "/SavedMaps/" + name + ".bin";
+        filePath = Application.persistentDataPath + "/SavedMaps/" + name + ".bin";
 
         if(!File.Exists(filePath)){
             // cria um arquivo para escrever

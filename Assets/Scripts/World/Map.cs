@@ -6,7 +6,9 @@ using System;
 
 public class Map : MonoBehaviour{
     // Variáveis para gerenciamento das informações gerais do mapa
+    [HideInInspector]
     public int mapRows;
+    [HideInInspector]
     public int mapCols;
     public float centerOffset;
     public bool isMapPopulated = false; 

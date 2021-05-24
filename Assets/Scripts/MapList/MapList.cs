@@ -38,6 +38,25 @@ public class MapList : MonoBehaviour{
         selectMapBtn.onClick.AddListener(() => SelectMap());
 
         ResetData();
+        InitList();
+    }
+
+    void InitList(){
+        string basePath = Application.persistentDataPath + "/SavedMaps/"; 
+        if(Directory.Exists(basePath)){
+            DirectoryInfo dir = new DirectoryInfo(basePath);
+            foreach(var file in dir.GetFiles("*.bin")){
+                Debug.Log(file);
+                string name = file.Name.Replace(".bin", "");
+                int mapRows;
+                int mapCols;
+                using(BinaryReader br = new BinaryReader(File.Open(file.FullName, FileMode.Open))){
+                    mapRows = br.ReadInt32();
+                    mapCols = br.ReadInt32();
+                }
+                AddMap(name, mapRows, mapCols);
+            }
+        }
     }
 
     public void OpenForm(){
@@ -45,7 +64,7 @@ public class MapList : MonoBehaviour{
         form.SetActive(true);
     }
 
-    public void ResetData(){
+    void ResetData(){
         curIndex = -1;
         curFilePath = "";
         removeMapBtn.interactable = false;
@@ -105,12 +124,12 @@ public class MapList : MonoBehaviour{
         newMap.name = name;
         newMap.transform.SetParent(list);
         newMap.transform.localPosition = new Vector3(0f, 0f, 0f);
-        newMap.GetComponentsInChildren<Text>()[1].text = name;                       // nome do mapa
-        newMap.GetComponentsInChildren<Text>()[2].text = mapRows.ToString();         // quantidade de linhas
-        newMap.GetComponentsInChildren<Text>()[3].text = mapCols.ToString();         // quantidade de colunas
-        newMap.GetComponent<Button>().onClick.AddListener(() => UpdateIndex(count)); // atribui identificador para o mapa
-        newMap.GetComponent<MapSave>().CreateFile(name, mapRows, mapCols);           // cria arquivo para armazenar dados do mapa
-        mapInfoInstances.Add(newMap);                                                // insere na lista
-        ChangeInstanceColor(count, false);                                           // define cor do item como "não selecionado"
+        newMap.GetComponentsInChildren<Text>()[1].text = name;                              // nome do mapa
+        newMap.GetComponentsInChildren<Text>()[2].text = mapRows.ToString();                // quantidade de linhas
+        newMap.GetComponentsInChildren<Text>()[3].text = mapCols.ToString();                // quantidade de colunas
+        newMap.GetComponent<Button>().onClick.AddListener(() => UpdateIndex(count));        // atribui identificador para o mapa
+        newMap.GetComponent<MapSave>().CreateFile(name, mapRows, mapCols);                  // cria arquivo para armazenar dados do mapa
+        mapInfoInstances.Add(newMap);                                                       // insere na lista
+        ChangeInstanceColor(count, false);                                                  // define cor do item como "não selecionado"
     }
 }
