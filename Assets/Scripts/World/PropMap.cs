@@ -30,7 +30,7 @@ public class PropMap : MonoBehaviour{
             propMap = new (bool, byte)[Map.singleton.mapRows, Map.singleton.mapCols];
             bool isPropOrigin;
             byte propID;
-            int seekSize = 2 * sizeof(int) + (Map.singleton.mapRows * Map.singleton.mapCols * sizeof(byte));
+            int seekSize = 2 * (sizeof(Int32) + (Map.singleton.mapRows * Map.singleton.mapCols * sizeof(byte)));
             // lê o trecho do arquivo que contém os dados da posição dos props
             using(BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open))){
                 reader.BaseStream.Seek(seekSize, SeekOrigin.Begin);
@@ -50,12 +50,12 @@ public class PropMap : MonoBehaviour{
     void PopulatePropMap(){
         for(int i = 0; i < Map.singleton.mapRows; i++)
             for(int j = 0; j < Map.singleton.mapCols; j++)
-                if(propMap[i, j].Item1) AddProp(new Vector2Int(i, j), propMap[i, j].Item2);
+                if(propMap[i, j].Item1) AddProp(new Vector2Int(i, j), propMap[i, j].Item2, true);
     }
 
-    public void AddProp(Vector2Int pos, byte propID){
+    public void AddProp(Vector2Int pos, byte propID, bool init=false){
         if(!Map.singleton.IsPositionInMap(pos.x, pos.y)) return;
-        if(propMap[pos.x, pos.y].Item2 == propID) return;
+        if(propMap[pos.x, pos.y].Item1 && propMap[pos.x, pos.y].Item2 == propID && !init) return;
         RemoveProp(pos);
 
         float centerOffset = Map.singleton.centerOffset;

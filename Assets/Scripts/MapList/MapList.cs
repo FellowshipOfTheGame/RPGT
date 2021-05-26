@@ -99,7 +99,7 @@ public class MapList : MonoBehaviour{
             if(curIndex != -1) ChangeInstanceColor(curIndex, false);
             ChangeInstanceColor(index, true);
             curIndex = index;
-            curFilePath = mapInfoInstances[curIndex].GetComponent<MapSave>().filePath;
+            curFilePath = mapInfoInstances[curIndex].GetComponent<MapSave>().FilePath();
             removeMapBtn.interactable = true;
             selectMapBtn.interactable = true;
         }

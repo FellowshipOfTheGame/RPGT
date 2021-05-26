@@ -8,7 +8,6 @@ public class Tab : MonoBehaviour{
     private Button button;
     
     private void Start(){
-        Debug.Log(MapMaker.singleton);
         button = gameObject.GetComponent<Button>();
         button.onClick.AddListener(() => MapMaker.singleton.ChangeHotbarContent(tabContent)); 
     }

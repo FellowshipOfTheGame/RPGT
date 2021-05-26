@@ -132,6 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 169565792}
+  - component: {fileID: 169565793}
   m_Layer: 5
   m_Name: Settings
   m_TagString: Untagged
@@ -161,6 +162,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 140, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &169565793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169565791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ccb98637b6f2f94690374be6081b1e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &177321368
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5618,6 +5631,22 @@ PrefabInstance:
       propertyPath: _icon
       value: fa-external-link-alt
       objectReference: {fileID: 0}
+    - target: {fileID: 4379660615099139089, guid: 7c7b227100039d143afaa08de4b12805, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379660615099139089, guid: 7c7b227100039d143afaa08de4b12805, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379660615099139089, guid: 7c7b227100039d143afaa08de4b12805, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379660615099139089, guid: 7c7b227100039d143afaa08de4b12805, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4379660615099139090, guid: 7c7b227100039d143afaa08de4b12805, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -6811,6 +6840,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1764807866}
   - component: {fileID: 1764807867}
+  - component: {fileID: 1764807868}
   m_Layer: 0
   m_Name: MapHandler
   m_TagString: Untagged
@@ -6862,6 +6892,18 @@ MonoBehaviour:
   selectedTool: {fileID: -7209850345919506388, guid: c6a033249962e53479c0ffbb50573fc2, type: 3}
   notSelectedColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
   selectedColor: {r: 0, g: 0.53333336, b: 0.9215687, a: 1}
+--- !u!114 &1764807868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764807865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f795a69057a48894497951020678e019, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1770775284
 GameObject:
   m_ObjectHideFlags: 0
