@@ -14,7 +14,7 @@ public class MapList : MonoBehaviour{
     public string curFilePath;
     public GameObject form;
     public GameObject mapInfoPrefab;
-    private List<GameObject> mapInfoInstances;
+    public List<GameObject> mapInfoInstances;
     public Color selectedColor;
     public Color notSelectedColor;
     public static MapList singleton;

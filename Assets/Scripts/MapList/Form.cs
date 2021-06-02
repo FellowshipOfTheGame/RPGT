@@ -31,6 +31,11 @@ public class Form : MonoBehaviour{
         int mapCols = Int32.Parse(textCols.text);
         // Checa valores inválidos
         if(mapRows <= 0 || mapCols <= 0) return;
+        // Verifica se o nome já existe
+        foreach(GameObject item in MapList.singleton.mapInfoInstances)
+            if(item.name == mapName){
+                return;
+            }
         // Limpa conteúdo atual
         textName.text = "";
         textRows.text = "";

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using UnityEngine.SceneManagement;
 
 public class Map : MonoBehaviour{
     // Variáveis para gerenciamento das informações gerais do mapa
@@ -65,6 +66,8 @@ public class Map : MonoBehaviour{
         InitBlocks();
         InitFluids();
         PopulateMap();
+        // Gambiarra    
+        UpdateVoxel(new Vector2Int(0,0), voxelMap[0,0].Item1, voxelMap[0,0].Item2);
         centerOffset = gameObject.transform.localScale.x/2f;
     }
 
@@ -275,6 +278,7 @@ public class Map : MonoBehaviour{
     }
 
     public void UpdateVoxel(Vector2Int coord, byte voxelType, byte newBlockID = 0){
+        if(!IsPositionInMap(coord.x, coord.y)) return;
         voxelMap[coord.x, coord.y].Item1 = voxelType;
         voxelMap[coord.x, coord.y].Item2 = newBlockID;
         ClearBlockMeshData();
