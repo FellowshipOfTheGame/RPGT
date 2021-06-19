@@ -29,6 +29,6 @@ public class SettingsHandler : MonoBehaviour{
     }
 
     void Exit(){
-        SceneManager.LoadScene("MapList");
+        SceneManager.LoadScene("Room");
     }
 }

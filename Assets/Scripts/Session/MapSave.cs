@@ -19,14 +19,19 @@ public class MapSave : MonoBehaviour{
     }
     public MapSaveData data = new MapSaveData();
 
+    public string DirectoryPath(){
+        return Path.Combine(Application.persistentDataPath.Replace('/', Path.DirectorySeparatorChar), "SavedMaps");
+    }
+
     public string FilePath(){
-        return Application.persistentDataPath + "/SavedMaps/" + data.mapName + ".bin";
+        return Path.Combine(DirectoryPath(), data.mapName + ".bin");
     }
 
     public void CreateFile(string name, int mapRows, int mapCols){
         data.Init(name, mapRows, mapCols);
         Debug.Log(FilePath());
         if(!File.Exists(FilePath())){
+            Directory.CreateDirectory(DirectoryPath());
             // cria um arquivo para escrever
             using(BinaryWriter writer = new BinaryWriter(File.Open(FilePath(), FileMode.Create))){
                 // tamanho do mapa
@@ -51,7 +56,7 @@ public class MapSave : MonoBehaviour{
             }	
         }
 
-        else Debug.Log("Arquivo " + name + ".bin já existe.");
+        else throw new ArgumentException("Arquivo " + name + ".bin já existe.");
     }
 
     public void ReadFile(){

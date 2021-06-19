@@ -5,44 +5,45 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Form : MonoBehaviour{
-    private InputField textName;
-    private InputField textRows;
-    private InputField textCols;
-    public GameObject panel;
 
-    private Button confirmButton;
+    string _mapName = "";
+    int _mapRows = -1;
+    int _mapCols = -1;
 
-    private void Start() {
-        // Referencia elementos do formulário
-        textName = this.GetComponentsInChildren<InputField>()[0];
-        textRows = this.GetComponentsInChildren<InputField>()[1];
-        textCols = this.GetComponentsInChildren<InputField>()[2];
-        confirmButton = this.GetComponentsInChildren<Button>()[1];
-        // Adiciona listeners para conclusão do formulário
-        confirmButton.onClick.AddListener(() => Confirm());
+    public string mapName { set { _mapName = value; } }
+    public string mapRows { set { _mapRows = ValidateSize(value); } }
+    public string mapCols { set { _mapCols = ValidateSize(value); } }
+
+    public Text invalid;
+
+    int ValidateSize(string s) {
+        int value = 0;
+        try {
+            value = Int32.Parse(s);
+        } catch (Exception) {
+            invalid.gameObject.SetActive(true);
+        }
+
+        if (value <= 0) {
+            invalid.gameObject.SetActive(true);
+            return -1;
+        }
+
+        return value;
     }
 
-    private void Confirm(){
-        // Checa se todos os campos foram preenchidos
-        if(textName.text.Length == 0 || textRows.text.Length == 0 || textCols.text.Length == 0) return;
-        // Recebe o conteúdo dos inputs
-        string mapName = textName.text;
-        int mapRows = Int32.Parse(textRows.text);
-        int mapCols = Int32.Parse(textCols.text);
-        // Checa valores inválidos
-        if(mapRows <= 0 || mapCols <= 0) return;
+    public void Confirm(GameObject toBeDeactivated = null){
+        invalid.gameObject.SetActive(true);
+        if(_mapName.Length == 0 || _mapRows <= 0 || _mapCols <= 0) return;
+
         // Verifica se o nome já existe
-        foreach(GameObject item in MapList.singleton.mapInfoInstances)
-            if(item.name == mapName){
-                return;
-            }
-        // Limpa conteúdo atual
-        textName.text = "";
-        textRows.text = "";
-        textCols.text = "";
-        // Desabilita painel do formulário
-        panel.SetActive(false);
+        if (MapList.singleton.mapInfoInstances.Find(gameObj => gameObject.name == _mapName) != null) return;
+
         // Cria instância na lista
-        MapList.singleton.AddMap(mapName, mapRows, mapCols);
+        try {
+            MapList.singleton.AddMap(_mapName, _mapRows, _mapCols, true);
+            invalid.gameObject.SetActive(false);
+            toBeDeactivated.SetActive(false);
+        } catch (ArgumentException) { }
     }
 }

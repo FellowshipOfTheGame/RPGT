@@ -12,6 +12,7 @@ public class MapList : MonoBehaviour{
     private Button selectMapBtn;
     private int curIndex;
     public string curFilePath;
+    public GameObject panel;
     public GameObject form;
     public GameObject mapInfoPrefab;
     public List<GameObject> mapInfoInstances;
@@ -27,15 +28,12 @@ public class MapList : MonoBehaviour{
         singleton = this;
         mapInfoInstances = new List<GameObject>();
 
-        GameObject panel = GameObject.Find("Panel");
-
         addMapBtn = panel.GetComponentsInChildren<Button>()[0];
         removeMapBtn = panel.GetComponentsInChildren<Button>()[1];
         selectMapBtn = panel.GetComponentsInChildren<Button>()[2];
 
         addMapBtn.onClick.AddListener(() => OpenForm());
         removeMapBtn.onClick.AddListener(() => RemoveMap());
-        selectMapBtn.onClick.AddListener(() => SelectMap());
 
         ResetData();
         InitList();
@@ -117,7 +115,7 @@ public class MapList : MonoBehaviour{
         }
     }
 
-    public void AddMap(string name, int mapRows, int mapCols){
+    public void AddMap(string name, int mapRows, int mapCols, bool createFile = false){
         GameObject newMap = Instantiate(mapInfoPrefab);
         int count = mapInfoInstances.Count;
 
@@ -128,7 +126,12 @@ public class MapList : MonoBehaviour{
         newMap.GetComponentsInChildren<Text>()[2].text = mapRows.ToString();                // quantidade de linhas
         newMap.GetComponentsInChildren<Text>()[3].text = mapCols.ToString();                // quantidade de colunas
         newMap.GetComponent<Button>().onClick.AddListener(() => UpdateIndex(count));        // atribui identificador para o mapa
-        newMap.GetComponent<MapSave>().CreateFile(name, mapRows, mapCols);                  // cria arquivo para armazenar dados do mapa
+        
+        newMap.GetComponent<MapSave>().data.Init(name, mapRows, mapCols);
+        if (createFile) {
+            newMap.GetComponent<MapSave>().CreateFile(name, mapRows, mapCols);              // cria arquivo para armazenar dados do mapa
+        }
+
         mapInfoInstances.Add(newMap);                                                       // insere na lista
         ChangeInstanceColor(count, false);                                                  // define cor do item como "não selecionado"
     }
