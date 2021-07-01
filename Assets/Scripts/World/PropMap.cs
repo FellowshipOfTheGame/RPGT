@@ -12,7 +12,8 @@ public class PropMap : MonoBehaviour{
     private void Awake() {
         if(singleton != null){
             Debug.LogWarning("Houve uma tentativa de criar 2 PropMaps");
-            Destroy(this);
+            Destroy(gameObject);
+            return;
         }
         singleton = this;   
     }

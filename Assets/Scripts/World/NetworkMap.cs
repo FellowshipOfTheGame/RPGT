@@ -17,6 +17,7 @@ public class NetworkMap : NetworkBehaviour
         if (singleton != null) {
             Debug.LogWarning("Houve uma tentativa de instanciar mais de um NetworkMap");
             Destroy(gameObject);
+            return;
         }
         singleton = this;
         DontDestroyOnLoad(gameObject);
@@ -41,7 +42,6 @@ public class NetworkMap : NetworkBehaviour
                         voxelType = reader.ReadByte();
                         voxelID = reader.ReadByte();
                         mapContent.Add(new BlockContent(null, (VoxelData.VoxelType) voxelType, voxelID));
-                        Debug.Log("Voxel: " + i + " " + j + ": " + voxelType + " " + voxelID);
                     }
                 }
                 for(int i = 0; i < mapRows; i++){
@@ -49,7 +49,6 @@ public class NetworkMap : NetworkBehaviour
                         isPropOrigin = reader.ReadBoolean();
                         propID = reader.ReadByte();
                         propMap.Add(new PropContent(isPropOrigin, propID));
-                        Debug.Log("Prop: " + i + " " + j + ": " + propID);
                     }
                 }
             }

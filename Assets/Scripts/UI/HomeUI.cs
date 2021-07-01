@@ -11,6 +11,12 @@ public class HomeUI : MonoBehaviour
     public void Start() {
         networkRoomManager = NetworkManager.singleton as CustomNetworkRoomManager;
         networkMap = NetworkMap.singleton;
+
+        if (networkRoomManager == null)
+            Debug.LogWarning("networkRoomManager null");
+
+        if (networkMap == null)
+            Debug.LogWarning("networkMap null");
     }
 
     public void Host() {

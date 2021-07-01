@@ -30,7 +30,8 @@ public class Session : MonoBehaviour{
 
     void Awake(){
         if (singleton != null) {
-            Destroy(this);
+            Destroy(gameObject);
+            return;
         }
         singleton = this;
 

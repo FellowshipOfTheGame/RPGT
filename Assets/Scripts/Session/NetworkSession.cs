@@ -16,6 +16,7 @@ public class NetworkSession : NetworkBehaviour
         if (singleton != null) {
             Debug.LogWarning("Houve uma tentativa de instanciar mais de um NetworkSession");
             Destroy(gameObject);
+            return;
         }
         singleton = this;
         DontDestroyOnLoad(gameObject);
@@ -71,11 +72,9 @@ public class NetworkSession : NetworkBehaviour
 
     void NextTurn() {
         if (curEntity != null) {
-            Debug.Log("Removendo " + curEntity + " da fila");
             turnQueue.Remove(curEntity);
             curEntity.turn++;
             turn = curEntity.turn;
-            Debug.Log("Adicionando " + curEntity + " na fila");
             turnQueue.Add(curEntity);
         }
 

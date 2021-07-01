@@ -23,7 +23,8 @@ public class MapList : MonoBehaviour{
     void Awake(){
         if(singleton != null){
             Debug.LogWarning("Houve uma tentativa de criar 2 MapLists");
-            Destroy(this);
+            Destroy(gameObject);
+            return;
         }
         singleton = this;
         mapInfoInstances = new List<GameObject>();

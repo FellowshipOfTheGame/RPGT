@@ -39,7 +39,8 @@ public class MapMaker : MonoBehaviour{
     void Start(){
         if(singleton != null){
             Debug.LogWarning("Houve uma tentativa de criar 2 MapMakers");
-            Destroy(this);
+            Destroy(gameObject);
+            return;
         }
         singleton = this;
 

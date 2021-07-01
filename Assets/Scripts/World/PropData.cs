@@ -10,7 +10,8 @@ public class PropData : MonoBehaviour{
     void Awake() {
         if(singleton != null) {
             Debug.LogWarning("Houve uma tentativa de criar 2 PropData");
-            Destroy(this);
+            Destroy(gameObject);
+            return;
         }
         singleton = this;
     }

@@ -43,7 +43,8 @@ public class Map : MonoBehaviour{
     void Awake() {
         if(singleton != null) {
             Debug.LogWarning("Houve uma tentativa de criar 2 Maps");
-            Destroy(this);
+            Destroy(gameObject);
+            return;
         }
 
         singleton = this;
@@ -120,10 +121,8 @@ public class Map : MonoBehaviour{
             for(int j = 0; j < mapCols; j++) {
                 BlockContent current = networkMap.GetMapContent(i, j);
                 if (current == null) {
-                    Debug.Log("Current é null");
                 }
                 voxelMap[i, j] = ((byte) current.voxelType, (byte) current.voxelIndex);
-                Debug.Log("Interpretado: " + i + " " + j + ": " + ((byte) current.voxelType) + " " + ((byte) current.voxelIndex));
                 UpdateMeshData(new Vector2Int(i, j));
             }
         isMapPopulated = true;

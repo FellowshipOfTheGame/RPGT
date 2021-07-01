@@ -20,7 +20,8 @@ public class TileManager : MonoBehaviour{
     private void Awake() {
         if (singleton != null) {
             Debug.LogWarning("Houve uma tentativa de setar 2 TileManagers");
-            Destroy(this);
+            Destroy(gameObject);
+            return;
         }
         singleton = this;
 

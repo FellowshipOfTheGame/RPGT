@@ -23,6 +23,7 @@ public class CustomNetworkRoomManager : NetworkRoomManager
     /// <returns>A new GamePlayer object.</returns>
     public override GameObject OnRoomServerCreateGamePlayer(NetworkConnection conn, GameObject roomPlayer)
     {
+        Debug.Log("Chamou");
         // Spawns the player, fills its position on the mapContent and translates him to such position
         GameObject gameObjPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         Entity player = gameObjPlayer.GetComponent<Entity>();

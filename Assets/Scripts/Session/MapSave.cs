@@ -43,7 +43,6 @@ public class MapSave : MonoBehaviour{
                     for(int j = 0; j < mapCols; j++){
                         writer.Write((byte)VoxelData.VoxelType.Block);     // tipo do voxel
                         writer.Write((byte)BlockData.BlockEnum.Default);   // id do voxel
-                        Debug.Log("Save Voxel: " + i + " " + j + ": " + (byte)VoxelData.VoxelType.Block + " " + (byte)BlockData.BlockEnum.Default);
                     }
                 }
 
@@ -52,7 +51,6 @@ public class MapSave : MonoBehaviour{
                     for(int j = 0; j < mapCols; j++){
                         writer.Write((bool)false);                   // ponto de origem do prop
                         writer.Write((byte)PropData.PropEnum.None);  // id do prop
-                        Debug.Log("Save Prop: " + i + " " + j + ": " + (byte)PropData.PropEnum.None);
                     }
                 } 
             }	
