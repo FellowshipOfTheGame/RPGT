@@ -250,18 +250,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockList:
-  - blockName: Air
-    canWalk: 0
-    icon: {fileID: 0}
-    backFaceTexture: 0
-    frontFaceTexture: 0
-    topFaceTexture: 0
-    bottomFaceTexture: 0
-    leftFaceTexture: 0
-    rightFaceTexture: 0
   - blockName: Default
     canWalk: 1
-    icon: {fileID: -2978653956524333172, guid: ff22d4b1d5cedec4a80900e9f41f290b, type: 3}
+    icon: {fileID: -9048387037246611838, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
     backFaceTexture: 0
     frontFaceTexture: 0
     topFaceTexture: 0
@@ -270,7 +261,7 @@ MonoBehaviour:
     rightFaceTexture: 0
   - blockName: Ground
     canWalk: 1
-    icon: {fileID: -299690340437171572, guid: ff22d4b1d5cedec4a80900e9f41f290b, type: 3}
+    icon: {fileID: -1003240340476108059, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
     backFaceTexture: 2
     frontFaceTexture: 2
     topFaceTexture: 3
@@ -279,7 +270,7 @@ MonoBehaviour:
     rightFaceTexture: 2
   - blockName: Stone
     canWalk: 1
-    icon: {fileID: 3357360333254942192, guid: ff22d4b1d5cedec4a80900e9f41f290b, type: 3}
+    icon: {fileID: 8548054500567881078, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
     backFaceTexture: 8
     frontFaceTexture: 8
     topFaceTexture: 8
@@ -288,7 +279,7 @@ MonoBehaviour:
     rightFaceTexture: 8
   - blockName: Sand
     canWalk: 1
-    icon: {fileID: -1290855366162983238, guid: ff22d4b1d5cedec4a80900e9f41f290b, type: 3}
+    icon: {fileID: 4814481203266816425, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
     backFaceTexture: 4
     frontFaceTexture: 4
     topFaceTexture: 4
@@ -297,34 +288,52 @@ MonoBehaviour:
     rightFaceTexture: 4
   - blockName: RedSand
     canWalk: 1
-    icon: {fileID: -2248273014285675650, guid: ff22d4b1d5cedec4a80900e9f41f290b, type: 3}
+    icon: {fileID: 206441913591338368, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
     backFaceTexture: 5
     frontFaceTexture: 5
     topFaceTexture: 5
     bottomFaceTexture: 5
     leftFaceTexture: 5
     rightFaceTexture: 5
+  - blockName: SandStone
+    canWalk: 1
+    icon: {fileID: -3475620171103913013, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
+    backFaceTexture: 7
+    frontFaceTexture: 7
+    topFaceTexture: 7
+    bottomFaceTexture: 7
+    leftFaceTexture: 7
+    rightFaceTexture: 7
+  - blockName: Snow
+    canWalk: 1
+    icon: {fileID: 1008355616314921112, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
+    backFaceTexture: 6
+    frontFaceTexture: 6
+    topFaceTexture: 6
+    bottomFaceTexture: 6
+    leftFaceTexture: 6
+    rightFaceTexture: 6
   fluidList:
-  - blockName: Air
-    canWalk: 0
-    icon: {fileID: 0}
-    backFaceTexture: 0
-    frontFaceTexture: 0
-    topFaceTexture: 0
-    bottomFaceTexture: 0
-    leftFaceTexture: 0
-    rightFaceTexture: 0
-    material: {fileID: 0}
   - blockName: Water
     canWalk: 0
-    icon: {fileID: 0}
-    backFaceTexture: 0
-    frontFaceTexture: 0
-    topFaceTexture: 0
-    bottomFaceTexture: 0
-    leftFaceTexture: 0
-    rightFaceTexture: 0
-    material: {fileID: 0}
+    icon: {fileID: -6506628518334011501, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
+    backFaceTexture: 9
+    frontFaceTexture: 9
+    topFaceTexture: 9
+    bottomFaceTexture: 9
+    leftFaceTexture: 9
+    rightFaceTexture: 9
+    material: {fileID: 2100000, guid: ffb8d767e8cb65440978ec377596053e, type: 2}
+  - blockName: Lava
+    canWalk: 0
+    icon: {fileID: 8465270892762914595, guid: 7edf31676f6898c41ac6958268740fbb, type: 3}
+    backFaceTexture: 10
+    frontFaceTexture: 10
+    topFaceTexture: 10
+    bottomFaceTexture: 10
+    leftFaceTexture: 10
+    rightFaceTexture: 10
+    material: {fileID: 2100000, guid: 7b57839ddec683744a7a4345d9ba8b86, type: 2}
 --- !u!1 &179893708
 GameObject:
   m_ObjectHideFlags: 0

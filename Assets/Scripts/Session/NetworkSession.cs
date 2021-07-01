@@ -15,7 +15,7 @@ public class NetworkSession : NetworkBehaviour
     public void Awake() {
         if (singleton != null) {
             Debug.LogWarning("Houve uma tentativa de instanciar mais de um NetworkSession");
-            Destroy(this);
+            Destroy(gameObject);
         }
         singleton = this;
         DontDestroyOnLoad(gameObject);

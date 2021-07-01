@@ -19,7 +19,19 @@ public class PropMap : MonoBehaviour{
 
     void Start(){
         propInstances = new Dictionary<Vector2Int, GameObject>();
-        ReadFile();
+        
+        NetworkMap networkMap = NetworkMap.singleton;
+
+        int mapRows = networkMap.mapRows;
+        int mapCols = networkMap.mapCols;
+
+        propMap = new (bool, byte)[mapRows, mapCols];
+        for(int i = 0; i < mapRows; i++)
+            for(int j = 0; j < mapCols; j++) {
+                PropContent current = networkMap.GetPropMap(i, j);
+                propMap[i, j] = (current.propOrigin, current.index);
+            }
+
         PopulatePropMap();
     }
 

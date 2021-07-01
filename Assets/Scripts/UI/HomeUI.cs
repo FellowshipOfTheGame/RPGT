@@ -5,23 +5,28 @@ using UnityEngine.UI;
 
 public class HomeUI : MonoBehaviour
 {
-    public GameObject home;
-    public GameObject mapSelection;
-    public NetworkRoomManager networkManager;
+    CustomNetworkRoomManager networkRoomManager;
+    NetworkMap networkMap;
+
+    public void Start() {
+        networkRoomManager = NetworkManager.singleton as CustomNetworkRoomManager;
+        networkMap = NetworkMap.singleton;
+    }
+
+    public void Host() {
+        networkRoomManager.StartHost();
+    }
+
+    public void Join() {
+        networkRoomManager.StartClient();
+    }
 
     public void SetAdress(Text input)
     {
-        networkManager.networkAddress = input.text;
+        networkRoomManager.networkAddress = input.text;
     }
 
-    void DeativateAllPanels() {
-        home.SetActive(false);
-        mapSelection.SetActive(false);
-    }
-
-    public void ChangeToMapSelection() {
-        home.SetActive(false);
-
-        mapSelection.SetActive(true);
+    public void ReadFile() {
+        networkMap.ReadFile();
     }
 }

@@ -108,36 +108,24 @@ public class Map : MonoBehaviour{
         }
     }
 
-    void ReadFile(){
-        string filePath = MapList.singleton.curFilePath;
-        // verifica se o arquivo existe 
-        if(File.Exists(filePath)){
-            byte voxelType;
-            byte voxelID;
-            // lê o trecho do arquivo que contém as dimensões do mapa e a posição dos voxels
-            using(BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open))){
-                mapRows = reader.ReadInt32();
-                mapCols = reader.ReadInt32();
-                voxelMap = new (byte, byte)[mapRows, mapCols];
-                for(int i = 0; i < mapRows; i++){
-                    for(int j = 0; j < mapCols; j++){
-                        voxelType = reader.ReadByte();
-                        voxelID = reader.ReadByte();
-                        voxelMap[i, j] = (voxelType, voxelID);
-                    }
-                }
-            }
-        }
-
-        else throw new Exception("Arquivo de save do mapa não foi encontrado.");
-    }
-
     // Atribui blocos para o mapa
     void PopulateMap(){
-        ReadFile();
+        NetworkMap networkMap = NetworkMap.singleton;
+
+        mapRows = networkMap.mapRows;
+        mapCols = networkMap.mapCols;
+
+        voxelMap = new (byte, byte)[mapRows, mapCols];
         for(int i = 0; i < mapRows; i++)
-            for(int j = 0; j < mapCols; j++)
+            for(int j = 0; j < mapCols; j++) {
+                BlockContent current = networkMap.GetMapContent(i, j);
+                if (current == null) {
+                    Debug.Log("Current é null");
+                }
+                voxelMap[i, j] = ((byte) current.voxelType, (byte) current.voxelIndex);
+                Debug.Log("Interpretado: " + i + " " + j + ": " + ((byte) current.voxelType) + " " + ((byte) current.voxelIndex));
                 UpdateMeshData(new Vector2Int(i, j));
+            }
         isMapPopulated = true;
         CreateBlockMesh();
     }

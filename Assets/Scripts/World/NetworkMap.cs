@@ -1,35 +1,70 @@
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using System;
 
 public class NetworkMap : NetworkBehaviour
 {
     public static NetworkMap singleton;
+    [SyncVar]
     public int mapRows;
+    [SyncVar]
     public int mapCols;
     public SyncList<BlockContent> mapContent = new SyncList<BlockContent>();
+    public SyncList<PropContent> propMap = new SyncList<PropContent>();
     void Awake() {
         if (singleton != null) {
             Debug.LogWarning("Houve uma tentativa de instanciar mais de um NetworkMap");
-            Destroy(this);
+            Destroy(gameObject);
         }
         singleton = this;
         DontDestroyOnLoad(gameObject);
     }
 
-    void Start() {
-        if (isServer) {
-            // Instancia o mapa geral que é sincronizado entre todos os players
-            List<BlockContent> tmpMapContent = new List<BlockContent>();
-            for (int i = 0; i < mapRows * mapCols; i++)
-                tmpMapContent.Add(new BlockContent(null, VoxelData.VoxelType.Block, (int) BlockData.BlockEnum.Ground));
+    public void ReadFile(){
+        string filePath = MapList.singleton.curFilePath;
 
-            mapContent.AddRange(tmpMapContent);
+        // verifica se o arquivo existe 
+        if(File.Exists(filePath)){
+            byte voxelType;
+            byte voxelID;
+            bool isPropOrigin;
+            byte propID;
+
+            // lê o trecho do arquivo que contém as dimensões do mapa e a posição dos voxels
+            using(BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open))){
+                mapRows = reader.ReadInt32();
+                mapCols = reader.ReadInt32();
+                for(int i = 0; i < mapRows; i++){
+                    for(int j = 0; j < mapCols; j++){
+                        voxelType = reader.ReadByte();
+                        voxelID = reader.ReadByte();
+                        mapContent.Add(new BlockContent(null, (VoxelData.VoxelType) voxelType, voxelID));
+                        Debug.Log("Voxel: " + i + " " + j + ": " + voxelType + " " + voxelID);
+                    }
+                }
+                for(int i = 0; i < mapRows; i++){
+                    for(int j = 0; j < mapCols; j++){
+                        isPropOrigin = reader.ReadBoolean();
+                        propID = reader.ReadByte();
+                        propMap.Add(new PropContent(isPropOrigin, propID));
+                        Debug.Log("Prop: " + i + " " + j + ": " + propID);
+                    }
+                }
+            }
         }
+        else throw new Exception("Arquivo de save do mapa não foi encontrado.");
+
+        return;
     }
 
     public BlockContent GetMapContent(int i, int j) {
         return mapContent[(i * mapRows) + j];
+    }
+
+    public PropContent GetPropMap(int i, int j) {
+        return propMap[(i * mapRows) + j];
     }
 
     [Command(requiresAuthority = false)]
@@ -55,5 +90,18 @@ public class NetworkMap : NetworkBehaviour
                 if (GetMapContent(i, j).canWalk())
                     return new Vector2Int(i, j);
         throw new System.Exception("Não há espaço vazio no mapa");
+    }
+}
+
+public class PropContent {
+    public byte index;
+    public bool propOrigin;
+
+    public PropContent() {
+    }
+
+    public PropContent(bool propOrigin, byte index) {
+        this.propOrigin = propOrigin;
+        this.index = index;
     }
 }
